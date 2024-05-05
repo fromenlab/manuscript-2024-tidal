@@ -1,0 +1,50 @@
+{
+    "morphometric_path": "morphometric/ys_ll-20230323.txt",
+    "part_id": "230328-ff4-be",
+    "date_utc": "2023-03-28T12:56:05",
+    "computation": {
+        "gh_file": "\\lobe\\scripts\\_lobe.gh",
+        "base_unit": "millimeter",
+        "device": "d0503c2e-6124-9e8c-3a3e-81ca5b5940c0",
+        "rhino_build": "6.35.21222.17001",
+        "rhino_date": "2021-08-10T00:00:00",
+        "gh_build": "1.0.0007",
+        "gh_date": "Tuesday, 10 August 2021 17:00",
+        "core_dependencies": [
+            "Math Components 1.0.0.0",
+            "Curve Components 1.0.0.0",
+            "Triangulation Components 1.0.0.0",
+            "Surface Components 1.0.0.0",
+            "Vector Components 1.0.0.0",
+            "Grasshopper 1.0.0007"
+        ],
+        "addon_dependencies": [
+            " ",
+            "Mesh - Meshing 0.1",
+            "jSwan 1.2.0",
+            "DendroGH 0.9.1-alpha",
+            "Logging - Combine JSON 0.1",
+            "Populate - Lattice (Uniform) 0.1"
+        ]
+    },
+    "primitive_properties": {
+        "lattice_section": "p_transition"
+    },
+    "lattice_properties": {
+        "voxelization": "20230315-peripheral",
+        "unit_cell": "Weaire-Phelan",
+        "cell_length": 2.2999999999999998,
+        "strut_radius": 0.20000000000000001,
+        "dimensionless_radius": 0.086956521739130446
+    },
+    "volume_settings": {
+        "voxel_size": 0.050000000000000003,
+        "bandwidth": 1.0,
+        "isovalue": 0.0,
+        "adaptivity": 0.90000000000000002
+    },
+    "derived_properties": {
+        "lattice_volume": 6811.1773114172975,
+        "lattice_surface_area": 56701.751374021354
+    }
+}

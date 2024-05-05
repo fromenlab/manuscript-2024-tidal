@@ -1,0 +1,432 @@
+---
+title: "Airway Properties based on Yeh & Schum 1980 Morphometric Model"
+author: "irw"
+date: "Created 20230625 -- Last compiled `r format(Sys.Date())`"
+output:
+  pdf_document:
+    toc: yes
+    keep_tex: true
+  html_document:
+    df_print: paged
+    toc: yes
+    toc_float: yes
+editor_options:
+  chunk_output_type: inline
+params:
+  verbose: yes
+legacy-changes:
+- "20230302 - Copied from 20230227"
+changes:
+- "20230322 - Copied from 20230302"
+- "From airway-properties-ys.Rmd"
+---
+
+```{r, include=FALSE}
+if (params$verbose) {
+  knitr::opts_chunk$set(
+    echo = TRUE,
+    warning = TRUE,
+    message = FALSE
+  )
+} else {
+  knitr::opts_chunk$set(
+    echo = FALSE,
+    warning = FALSE,
+    message = FALSE
+  )
+}
+```
+
+```{r, echo=FALSE}
+if (knitr::is_latex_output()) {
+knitr::asis_output("\\newpage")
+}
+```
+
+```{r, child='notes.txt', eval=F}
+```
+
+```{r, echo=FALSE}
+if (knitr::is_latex_output()) {
+knitr::asis_output("\\newpage")
+}
+```
+
+```{r}
+# Setup chunk
+parent <- "lobe/scripts/"
+
+make_path <- function(local_path) {
+  path = here::here(paste0(parent, local_path))
+}
+
+append_date <- function(base_name) {
+  date = format(Sys.Date(), "%Y%m%d")
+  
+  split_name = strsplit(base_name, "\\.")
+  
+  return(paste0(split_name[[1]][1], "-", date, ".", split_name[[1]][2]))
+}
+```
+
+```{r}
+library(tidyverse)
+library(jsonlite)
+library(here)
+library(kableExtra)
+library(plotly)
+library(glue)
+library(pracma)
+
+source(here::here("resources/plot/print_ggplot.R"))
+source(here::here("resources/plot/plot_interactive.R"))
+
+source(here::here("lobe/scripts/analyze_airways.R"))
+```
+
+
+\clearpage
+\newpage
+# Analysis
+## Calculate properties
+
+Keeping alveolar data at end
+```{r, eval = T}
+whole <- read_csv(here::here("lobe/ref-data/ys/ys_whole.csv")) %>% 
+  analyze_airways(descriptor = "whole",
+                  weibel_transform = -1,
+                  separate_end = F)
+
+ru <- read_csv(here::here("lobe/ref-data/ys/ys_ru.csv")) %>% 
+  analyze_airways(descriptor = "ru",
+                  weibel_transform = -1,
+                  separate_end = F)
+
+rm <- read_csv(here::here("lobe/ref-data/ys/ys_rm.csv")) %>% 
+  analyze_airways(descriptor = "rm",
+                  weibel_transform = -1,
+                  separate_end = F)
+
+rl <- read_csv(here::here("lobe/ref-data/ys/ys_rl.csv")) %>% 
+  analyze_airways(descriptor = "rl",
+                  weibel_transform = -1,
+                  separate_end = F)
+
+lu <- read_csv(here::here("lobe/ref-data/ys/ys_lu.csv")) %>% 
+  analyze_airways(descriptor = "lu",
+                  weibel_transform = -1,
+                  separate_end = F)
+
+ll <- read_csv(here::here("lobe/ref-data/ys/ys_ll.csv")) %>% 
+  analyze_airways(descriptor = "ll",
+                  weibel_transform = -1,
+                  separate_end = F)
+
+```
+
+## Tables
+```{r, eval = F}
+# whole %>% ggplot() + 
+#   geom_line(aes(x = generation_weibel, y = volume_fractional_cumulative)) + 
+#   geom_line(aes(x = generation_weibel, y = airway_surface_fractional_cumulative))
+
+whole %>%
+  select(generation_weibel, length, diameter, cross_section, 
+         volume, volume_cumulative, volume_fractional_cumulative, 
+         airway_surface, airway_surface_cumulative, airway_surface_fractional_cumulative) %>% 
+  mutate(
+    generation_weibel = as.integer(generation_weibel),
+    volume_fractional_cumulative = volume_fractional_cumulative * 100,
+    airway_surface_fractional_cumulative = airway_surface_fractional_cumulative * 100
+  ) %>% 
+  mutate_if(is.numeric, format, digits=2, nsmall = 2, scientific = F) %>% 
+  kbl(booktabs = T,
+      col.names = c(
+        "Generation",
+        "L (cm)",
+        "D (cm)",
+        "CA (cm2)",
+        "V (cm3)",
+        "sumV",
+        "sumVpct",
+        "SA (cm2)",
+        "sumSA",
+        "sumSApct"
+      )) %>%
+  row_spec(0, bold = T) %>% 
+kable_styling(font_size = 9) %>% 
+  landscape()
+  
+```
+
+\clearpage
+
+
+## Broad output
+```{r}
+lobes <- c("ru", "rm", "rl", "lu", "ll", "whole")
+
+whole_airway <- read_csv(here::here("lobe/ref-data/ys/ys_whole.csv")) %>% 
+  analyze_airways(descriptor = "whole",
+                  weibel_transform = -1,
+                  separate_end = T)
+
+ru_airway <- read_csv(here::here("lobe/ref-data/ys/ys_ru.csv")) %>% 
+  analyze_airways(descriptor = "ru",
+                  weibel_transform = -1,
+                  separate_end = T)
+
+rm_airway <- read_csv(here::here("lobe/ref-data/ys/ys_rm.csv")) %>% 
+  analyze_airways(descriptor = "rm",
+                  weibel_transform = -1,
+                  separate_end = T)
+
+rl_airway <- read_csv(here::here("lobe/ref-data/ys/ys_rl.csv")) %>% 
+  analyze_airways(descriptor = "rl",
+                  weibel_transform = -1,
+                  separate_end = T)
+
+lu_airway <- read_csv(here::here("lobe/ref-data/ys/ys_lu.csv")) %>% 
+  analyze_airways(descriptor = "lu",
+                  weibel_transform = -1,
+                  separate_end = T)
+
+ll_airway <- read_csv(here::here("lobe/ref-data/ys/ys_ll.csv")) %>% 
+  analyze_airways(descriptor = "ll",
+                  weibel_transform = -1,
+                  separate_end = T)
+```
+
+
+```{r}
+full_table <- function(data) {
+  table <- data %>%
+    select(generation_weibel, length, diameter, cross_section, 
+           volume, volume_cumulative, volume_fractional_cumulative, 
+           airway_surface, airway_surface_cumulative, airway_surface_fractional_cumulative) %>% 
+    mutate(
+      generation_weibel = as.integer(generation_weibel),
+      volume_fractional_cumulative = volume_fractional_cumulative * 100,
+      airway_surface_fractional_cumulative = airway_surface_fractional_cumulative * 100,
+      airway_surface_cumulative = airway_surface_cumulative * (1/100)^2
+    ) %>% 
+    mutate_if(is.numeric, format, digits=2, nsmall = 2, scientific = F) %>% 
+    kbl(booktabs = T,
+        col.names = c(
+          "Generation",
+          "L (cm)",
+          "D (cm)",
+          "CA (cm2)",
+          "V (cm3)",
+          "sumV",
+          "sumVpct",
+          "SA (cm2)",
+          "sumSA (m2)",
+          "sumSApct"
+        )) %>%
+    row_spec(0, bold = T) %>% 
+    kable_styling(font_size = 9) %>% 
+    landscape()
+  
+  return(table)
+ 
+}
+
+dissertation_table <- function(data) {
+  table <- data %>% 
+    select(generation_weibel, volume_fractional_cumulative, 
+           airway_surface_fractional_cumulative) %>% 
+    mutate(
+      generation_weibel = as.integer(generation_weibel),
+      volume_fractional_cumulative = volume_fractional_cumulative * 100,
+      airway_surface_fractional_cumulative = airway_surface_fractional_cumulative * 100
+    ) %>% 
+    mutate_if(is.numeric, format, digits=2, nsmall = 2, scientific = F) %>% 
+    kbl(booktabs = T,
+        col.names = c(
+          "Generation",
+          "sumVpct",
+          "sumSApct"
+        )) %>%
+    row_spec(0, bold = T) %>% 
+    kable_styling(font_size = 9) %>% 
+    landscape()
+  
+  return(table)
+}
+```
+
+```{r}
+lobes <- c("ru", "rm", "rl", "lu", "ll", "whole")
+
+for (lobe in lobes) {
+  get(paste0(lobe, "_airway")) %>% full_table()
+}
+
+print_full <- function(name) {
+  paste0("## ", name) %>% knitr::asis_output()
+  return(get(name) %>% full_table())
+}
+
+# lobes %>% lapply(print_full) %>% report_list()
+
+"ru" %>% print_full()
+"rm" %>% print_full()
+"rl" %>% print_full()
+"lu" %>% print_full()
+"ll" %>% print_full()
+"whole" %>% print_full()
+```
+
+
+# Summary tables
+```{r, eval = T}
+print_end <- function(data) {
+  lobe_data <- data
+  
+  airways <- dim(lobe_data)[1]-1
+  lobe <- dim(lobe_data)[1]
+  
+  full_lobe <- lobe_data %>% slice(lobe)
+  full_airways <- lobe_data %>% slice(airways) 
+  
+  end_data <- lobe_data %>% slice(airways:lobe) %>% 
+    select(generation_weibel, length, volume, volume_cumulative, volume_fractional_cumulative,airway_surface, airway_surface_cumulative, airway_surface_fractional_cumulative)
+  
+  end_data_reduced <- end_data %>% 
+    select(generation_weibel, volume_cumulative, airway_surface_cumulative)
+  
+  return(end_data_reduced)
+}
+
+knitr::asis_output("## RU")
+ru %>% print_end()
+ru %>% dissertation_table()
+
+knitr::asis_output("## RM")
+rm %>% print_end()
+rm %>% dissertation_table()
+
+knitr::asis_output("## RL")
+rl %>% print_end()
+rl %>% dissertation_table()
+
+knitr::asis_output("## LU")
+lu %>% print_end()
+lu %>% dissertation_table()
+
+knitr::asis_output("## LL")
+ll %>% print_end()
+ll %>% dissertation_table()
+```
+
+## Combined tables
+```{r, eval = T}
+bind_rows(list(ru = ru, rm = rm, rl = rl, lu = lu, ll = ll, whole = whole),
+          .id = "id") %>% 
+  select(id, generation_weibel, volume_fractional_cumulative, airway_surface_fractional_cumulative) %>% 
+  mutate(
+    volume_fractional_cumulative = volume_fractional_cumulative*100,
+    airway_surface_fractional_cumulative = airway_surface_fractional_cumulative * 100
+  ) %>% 
+  pivot_wider(names_from = id, values_from = c(volume_fractional_cumulative, airway_surface_fractional_cumulative)) %>% 
+  arrange(generation_weibel) %>% 
+  select(contains("generation"), 
+         contains("_ru"), 
+         contains("_rm"), 
+         contains("_rl"),
+         contains("_lu"),
+         contains("_ll"),
+         contains("_whole")) %>% 
+  mutate_if(is.numeric, format, digits = 2, scientific = F) %>% 
+  kbl(booktabs = T,
+      col.names = c(
+        "Generation",
+        rep(c("Vol (%)", "SA (%)"), times = 6)
+      )) %>%
+  row_spec(0, bold = T) %>% 
+    kable_styling(font_size = 9) %>% 
+    landscape() %>% 
+  add_header_above(c(" ", "RU" = 2, "RM" = 2, "RL" = 2, "LU" = 2, "LL" = 2, "Whole" = 2))
+
+bind_rows(list(ru = ru %>% print_end(),
+               rm = rm %>% print_end(), 
+               rl = rl %>% print_end(), 
+               lu = lu %>% print_end(), 
+               ll = ll %>% print_end(), 
+               whole = whole %>% print_end()),
+          .id = "id") %>% 
+  pivot_wider(names_from = id, values_from = c(volume_cumulative, airway_surface_cumulative)) %>% 
+  arrange(generation_weibel) %>% 
+  select(contains("generation"), 
+         contains("_ru"), 
+         contains("_rm"), 
+         contains("_rl"),
+         contains("_lu"),
+         contains("_ll"),
+         contains("_whole")) %>% 
+  mutate_if(is.numeric, format, digits = 2, scientific = F) %>% 
+  kbl(booktabs = T,
+      col.names = c(
+        "Generation",
+        rep(c("Vol", "SA"), times = 6)
+      )) %>%
+  row_spec(0, bold = T) %>% 
+    kable_styling(font_size = 9) %>% 
+    landscape() %>% 
+  add_header_above(c(" ", "RU" = 2, "RM" = 2, "RL" = 2, "LU" = 2, "LL" = 2, "Whole" = 2))
+  
+```
+
+## Longtable
+
+```{r}
+bind_rows(list(ru = ru, rm = rm, rl = rl, lu = lu, ll = ll, whole = whole),
+          .id = "id") %>% 
+  select(id, generation_weibel, volume_fractional_cumulative, airway_surface_fractional_cumulative) %>% 
+  mutate(
+    volume_fractional_cumulative = volume_fractional_cumulative*100,
+    airway_surface_fractional_cumulative = airway_surface_fractional_cumulative * 100
+  ) %>% 
+  pivot_wider(names_from = id, values_from = c(volume_fractional_cumulative, airway_surface_fractional_cumulative)) %>% 
+  arrange(generation_weibel) %>% 
+  select(contains("generation"), 
+         contains("_ru"), 
+         contains("_rm"), 
+         contains("_rl"),
+         contains("_lu"),
+         contains("_ll"),
+         contains("_whole")) %>% 
+  mutate_if(is.numeric, format, digits = 2, scientific = F) %>% 
+  kbl(longtable = T,
+      booktabs = T,
+      col.names = c(
+        "Generation",
+        rep(c("%Vol", "%SA"), times = 6)
+      )) %>%
+  row_spec(0, bold = T) %>% 
+    kable_styling(font_size = 9) %>%
+    landscape() %>% 
+  add_header_above(c(" ", "RU" = 2, "RM" = 2, "RL" = 2, "LU" = 2, "LL" = 2, "Whole" = 2))
+```
+
+
+\clearpage
+
+
+
+\clearpage
+\newpage
+
+<!-- ## Right upper -->
+<!-- # ```{r} -->
+<!-- # ru$lobeProperties %>% print_kable(transpose = T) -->
+<!-- # ru$airwayProperties %>% print_kable() -->
+<!-- # ru$latticeProperties %>% print_kable(transpose = T) -->
+<!-- # ``` -->
+
+# `analyze_airways.R`
+```{embed}
+"analyze_airways.R"
+```
+

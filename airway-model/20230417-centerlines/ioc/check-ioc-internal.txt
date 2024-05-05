@@ -1,0 +1,30 @@
+﻿General information about this mesh:
+
+Mesh has 3264 naked edges.  Naked edges can cause problems if the ultimate goal is STL output.
+
+Mesh does not have any degenerate faces.
+Mesh does not have any ngons.
+Mesh does not have any extremely short edges.
+Mesh does not have any non manifold edges.
+Mesh does not have any duplicate faces.
+Mesh does not have any faces with directions different from the mesh as a whole.
+Mesh does not have any self intersecting faces.
+Mesh does not have any disjoint pieces.
+Mesh does not have any unused vertices.
+
+
+ID: beb04a00-8966-41b0-898e-f9fb162f4abd (12726)
+Object name: ;SOLID
+Layer name: Internal-Trimmed::Merged
+Render Material: 
+  source = from layer
+  index = -1
+
+Geometry:
+  Valid mesh.
+  Open double precision polygon mesh: 149282 vertices, 295448 faces with normals
+    Bounding box: (6.7803,-85.1044,-329.794) to (139.227,89.0328,21.6285)
+
+
+
+

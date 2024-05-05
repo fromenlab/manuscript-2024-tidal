@@ -1,0 +1,9 @@
+2023-12-04T10:03:49 --- 
+Device ID: TSI
+Alignment: inhale
+Temperature (C): 20.4
+Relative Humidity (%): 33
+Notes: 
+Flow meter warmed
+NRBV on
+

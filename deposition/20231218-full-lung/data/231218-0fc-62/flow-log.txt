@@ -1,0 +1,8 @@
+2023-12-18T12:16:55 --- 
+Device ID: tsi
+Alignment: inhale
+Temperature (C): 20.4
+Relative Humidity (%): 43
+Notes: 
+nrbv on
+

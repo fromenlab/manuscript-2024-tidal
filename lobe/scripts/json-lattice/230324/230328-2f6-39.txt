@@ -1,0 +1,76 @@
+{
+    "morphometric_path": "morphometric/ys_rl-20230323.txt",
+    "part_id": "230328-2f6-39",
+    "date_utc": "2023-03-28T13:29:45",
+    "computation": {
+        "gh_file": "\\lobe\\scripts\\_lobe.gh",
+        "base_unit": "millimeter",
+        "device": "d0503c2e-6124-9e8c-3a3e-81ca5b5940c0",
+        "rhino_build": "6.35.21222.17001",
+        "rhino_date": "2021-08-10T00:00:00",
+        "gh_build": "1.0.0007",
+        "gh_date": "Tuesday, 10 August 2021 17:00",
+        "core_dependencies": [
+            "Math Components 1.0.0.0",
+            "Curve Components 1.0.0.0",
+            "Transform Components 1.0.0.0",
+            "Surface Components 1.0.0.0",
+            "Vector Components 1.0.0.0",
+            "Grasshopper 1.0.0007"
+        ],
+        "addon_dependencies": [
+            " ",
+            "Mesh - Meshing 0.1",
+            "Primitive - Prepare (Origin) 0.1",
+            "jSwan 1.2.0",
+            "DendroGH 0.9.1-alpha",
+            "Logging - Combine JSON 0.1",
+            "Populate - Lattice (Uniform) 0.1"
+        ]
+    },
+    "primitive_properties": {
+        "input_shape": "central"
+    },
+    "lattice_properties": {
+        "voxelization": "Nov2021-Simplified",
+        "unit_cell": "Weaire-Phelan",
+        "cell_length": 13.196899999999999,
+        "strut_radius": 1.1877209999999998,
+        "dimensionless_radius": 0.089999999999999997
+    },
+    "volume_settings": {
+        "voxel_size": 0.050000000000000003,
+        "bandwidth": 1.0,
+        "isovalue": 0.0,
+        "adaptivity": 0.90000000000000002
+    },
+    "derived_properties": {
+        "lattice_volume": 4837.1124533991197,
+        "lattice_surface_area": 7056.6452301759437
+    },
+    "original_report": {
+        "report_version": "original_report",
+        "valid_mesh": "True",
+        "naked_edges": "0",
+        "closed_mesh": "True",
+        "manifold_mesh": "(True, True, False)",
+        "disjoint_count": "9",
+        "vertex_count": "174986",
+        "memory_estimate_mb": "30.41464",
+        "log_invalid": "None"
+    },
+    "modified_report": {
+        "report_version": "modified_report",
+        "valid_mesh": "True",
+        "naked_edges": "0",
+        "closed_mesh": "True",
+        "manifold_mesh": "(True, True, False)",
+        "disjoint_count": "9",
+        "vertex_count": "174986",
+        "memory_estimate_mb": "39.95428",
+        "log_invalid": "None",
+        "degenerate_faces": "(0, 0)",
+        "quads_to_tris": "True",
+        "mesh_flipped": "False"
+    }
+}

@@ -1,0 +1,74 @@
+2024-01-23T10:29:22 --- There was a problem creating the structure
+2024-01-23T10:29:22 --- [Errno 2] No such file or directory: 'git'
+2024-01-23T10:29:42 --- ['', 'Device ID: TSI 4000', 'Alignment: ', 'Temperature (C): 20.8', 'Relative Humidity (%): 19', 'Notes: ', 'Volume test2 for expt1, include the valve.\n']
+2024-01-23T10:29:42 --- Disconnecting flow meter for transfer to a new process.
+2024-01-23T10:29:42 --- Disconnected from /dev/ttyUSB0
+2024-01-23T10:29:42 --- Starting data collection process.
+2024-01-23T10:29:45 --- Connected to flow meter on port /dev/ttyUSB0
+2024-01-23T10:29:46 --- Set sample rate: ['OK']
+2024-01-23T10:29:46 --- Sample rate (ms): ['OK', '10']
+2024-01-23T10:29:50 --- Updating profiles...
+2024-01-23T10:29:50 --- Updating RU...
+2024-01-23T10:29:50 --- Updating RM...
+2024-01-23T10:29:50 --- Updating RL...
+2024-01-23T10:29:50 --- Updating LU...
+2024-01-23T10:29:50 --- Updating LL...
+2024-01-23T10:29:50 --- Writing file...
+2024-01-23T10:29:50 --- Disconnected from /dev/ttyACM0
+2024-01-23T10:30:04 --- Arduino updated
+2024-01-23T10:30:05 --- Sending: <?>
+2024-01-23T10:30:05 --- Connected to Arduino on port /dev/ttyACM0
+2024-01-23T10:30:05 --- Sending: <SN/12>
+2024-01-23T10:30:06 --- Sending: <SDP/10>
+2024-01-23T10:30:06 --- Sending: <SDI/1>
+2024-01-23T10:30:07 --- Sending: <SDE/2>
+2024-01-23T10:30:07 --- Sending: <SOI>
+2024-01-23T10:30:08 --- Sending: <SLS/350/10000>
+2024-01-23T10:30:08 --- Sending: <SLS/350/01000>
+2024-01-23T10:30:09 --- Sending: <SLS/350/00100>
+2024-01-23T10:30:09 --- Sending: <SLS/350/00010>
+2024-01-23T10:30:10 --- Sending: <SLS/350/00001>
+2024-01-23T10:30:10 --- Done
+2024-01-23T10:30:15 --- Stopping data collection. Please wait for the current data series to complete...
+2024-01-23T10:30:16 --- Disconnected from /dev/ttyUSB0
+2024-01-23T10:30:16 --- Data collection complete.
+2024-01-23T10:30:17 --- ['', 'Device ID: TSI 4000', 'Alignment: ', 'Temperature (C): 20.8', 'Relative Humidity (%): 19', 'Notes: ', 'Volume test2 for expt1, include the valve.\n']
+2024-01-23T10:30:17 --- Starting data collection process.
+2024-01-23T10:30:20 --- Connected to flow meter on port /dev/ttyUSB0
+2024-01-23T10:30:20 --- Set sample rate: ['OK']
+2024-01-23T10:30:21 --- Sample rate (ms): ['OK', '10']
+2024-01-23T10:30:33 --- Running variable profile...
+2024-01-23T10:30:33 --- Sending: <?S>
+2024-01-23T10:30:34 --- Delay profile (s): 10.00
+2024-01-23T10:30:34 --- Profile cycles: 12
+2024-01-23T10:30:34 --- Motor 0: 350 steps
+2024-01-23T10:30:34 --- Motor 0: 2000 delay
+2024-01-23T10:30:34 --- Motor 0 position: 0
+2024-01-23T10:30:34 --- Motor 1: 350 steps
+2024-01-23T10:30:34 --- Motor 1: 2000 delay
+2024-01-23T10:30:34 --- Motor 1 position: 0
+2024-01-23T10:30:34 --- Motor 2: 350 steps
+2024-01-23T10:30:34 --- Motor 2: 2000 delay
+2024-01-23T10:30:34 --- Motor 2 position: 0
+2024-01-23T10:30:34 --- Motor 3: 350 steps
+2024-01-23T10:30:34 --- Motor 3: 2000 delay
+2024-01-23T10:30:34 --- Motor 3 position: 0
+2024-01-23T10:30:34 --- Motor 4: 350 steps
+2024-01-23T10:30:34 --- Motor 4: 2000 delay
+2024-01-23T10:30:34 --- Motor 4 position: 0
+2024-01-23T10:30:34 --- Delay inhale (s): 1.00
+2024-01-23T10:30:34 --- Delay exhale (s): 2.00
+2024-01-23T10:30:34 --- Start maneuver: 1
+2024-01-23T10:30:34 --- Sending: <PROFILEV>
+2024-01-23T10:32:02 --- Starting interactive plot server with data from:
+	/home/dynamic/TIDAL/tidal-main/logs/240123-3b5-d4/data
+Please wait...
+2024-01-23T10:32:10 --- Dash is running on http://127.0.0.1:8050/
+
+
+2024-01-23T10:32:10 --- 2024-01-23T10:32:10 --- 
+2024-01-23T10:32:10 --- 2024-01-23T10:32:10 --- 
+2024-01-23T10:32:10 ---  * Serving Flask app 'main'
+
+2024-01-23T10:32:10 ---  * Debug mode: on
+

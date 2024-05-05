@@ -1,0 +1,89 @@
+2024-01-26T10:02:25 --- There was a problem creating the structure
+2024-01-26T10:02:25 --- [Errno 2] No such file or directory: 'git'
+2024-01-26T10:02:56 --- Updating profiles...
+2024-01-26T10:02:56 --- Updating RU...
+2024-01-26T10:02:56 --- Updating RM...
+2024-01-26T10:02:56 --- Updating RL...
+2024-01-26T10:02:56 --- Updating LU...
+2024-01-26T10:02:56 --- Updating LL...
+2024-01-26T10:02:56 --- Writing file...
+2024-01-26T10:02:56 --- Disconnected from /dev/ttyACM0
+2024-01-26T10:03:13 --- Arduino updated
+2024-01-26T10:03:14 --- Sending: <?>
+2024-01-26T10:03:15 --- Connected to Arduino on port /dev/ttyACM0
+2024-01-26T10:03:15 --- Sending: <SN/10>
+2024-01-26T10:03:15 --- Sending: <SDP/10>
+2024-01-26T10:03:16 --- Sending: <SDI/1>
+2024-01-26T10:03:16 --- Sending: <SDE/2>
+2024-01-26T10:03:17 --- Sending: <SOI>
+2024-01-26T10:03:17 --- Sending: <SLS/350/10000>
+2024-01-26T10:03:18 --- Sending: <SLS/350/01000>
+2024-01-26T10:03:18 --- Sending: <SLS/350/00100>
+2024-01-26T10:03:19 --- Sending: <SLS/350/00010>
+2024-01-26T10:03:19 --- Sending: <SLS/350/00001>
+2024-01-26T10:03:20 --- Done
+2024-01-26T10:04:23 --- ['', 'Device ID: TSI 4000', 'Alignment: ', 'Temperature (C): 20.5', 'Relative Humidity (%): 49', 'Notes: ', '\n']
+2024-01-26T10:04:24 --- Disconnecting flow meter for transfer to a new process.
+2024-01-26T10:04:24 --- Disconnected from /dev/ttyUSB0
+2024-01-26T10:04:24 --- Starting data collection process.
+2024-01-26T10:04:28 --- Connected to flow meter on port /dev/ttyUSB0
+2024-01-26T10:04:29 --- Set sample rate: ['OK']
+2024-01-26T10:04:29 --- Sample rate (ms): ['OK', '10']
+2024-01-26T10:04:33 --- Running variable profile...
+2024-01-26T10:04:33 --- Sending: <?S>
+2024-01-26T10:04:33 --- Delay profile (s): 10.00
+2024-01-26T10:04:33 --- Profile cycles: 10
+2024-01-26T10:04:33 --- Motor 0: 350 steps
+2024-01-26T10:04:33 --- Motor 0: 2000 delay
+2024-01-26T10:04:33 --- Motor 0 position: 0
+2024-01-26T10:04:33 --- Motor 1: 350 steps
+2024-01-26T10:04:33 --- Motor 1: 2000 delay
+2024-01-26T10:04:33 --- Motor 1 position: 0
+2024-01-26T10:04:33 --- Motor 2: 350 steps
+2024-01-26T10:04:33 --- Motor 2: 2000 delay
+2024-01-26T10:04:33 --- Motor 2 position: 0
+2024-01-26T10:04:33 --- Motor 3: 350 steps
+2024-01-26T10:04:33 --- Motor 3: 2000 delay
+2024-01-26T10:04:33 --- Motor 3 position: 0
+2024-01-26T10:04:33 --- Motor 4: 350 steps
+2024-01-26T10:04:33 --- Motor 4: 2000 delay
+2024-01-26T10:04:33 --- Motor 4 position: 0
+2024-01-26T10:04:33 --- Delay inhale (s): 1.00
+2024-01-26T10:04:33 --- Delay exhale (s): 2.00
+2024-01-26T10:04:33 --- Start maneuver: 1
+2024-01-26T10:04:33 --- Sending: <PROFILEV>
+2024-01-26T10:05:42 --- Stopping data collection. Please wait for the current data series to complete...
+2024-01-26T10:05:50 --- Disconnected from /dev/ttyUSB0
+2024-01-26T10:05:50 --- Data collection complete.
+2024-01-26T10:06:01 --- Starting interactive plot server with data from:
+	/home/dynamic/TIDAL/tidal-main/logs/240126-68b-fc/data
+Please wait...
+2024-01-26T10:06:11 --- Dash is running on http://127.0.0.1:8050/
+
+
+2024-01-26T10:06:11 --- 2024-01-26T10:06:11 --- 
+2024-01-26T10:06:11 --- 2024-01-26T10:06:11 --- 
+2024-01-26T10:06:11 ---  * Serving Flask app 'main'
+
+2024-01-26T10:06:11 ---  * Debug mode: on
+
+2024-01-26T10:06:32 --- Starting interactive plot server with data from:
+	/home/dynamic/TIDAL/tidal-main/logs/240126-68b-fc/data
+Please wait...
+2024-01-26T10:06:36 --- Dash is running on http://127.0.0.1:8050/
+
+
+2024-01-26T10:06:36 --- 2024-01-26T10:06:36 --- 
+2024-01-26T10:06:36 --- 2024-01-26T10:06:36 --- 
+2024-01-26T10:06:36 ---  * Serving Flask app 'main'
+
+2024-01-26T10:06:36 ---  * Debug mode: on
+
+2024-01-26T10:07:26 --- {"volume_L": 0.7385908333333338, "time_s": 1.9500000000000028, "flow_peak_slpm": 41.12, "flow_average_slpm": 22.647755102040815, "flow_median_slpm": 20.5, "start": {"curveNumber": 0, "pointNumber": 3815, "pointIndex": 3815, "x": 38.15, "y": 9.43}, "end": {"curveNumber": 0, "pointNumber": 4010, "pointIndex": 4010, "x": 40.1, "y": 5.4}}
+2024-01-26T10:07:30 --- {"volume_L": 0.7242241666666668, "time_s": 1.8200000000000003, "flow_peak_slpm": 41.12, "flow_average_slpm": 23.771748633879785, "flow_median_slpm": 21.91, "start": {"curveNumber": 0, "pointNumber": 3828, "pointIndex": 3828, "x": 38.28, "y": 4.37}, "end": {"curveNumber": 0, "pointNumber": 4010, "pointIndex": 4010, "x": 40.1, "y": 5.4}}
+2024-01-26T10:07:49 --- {"volume_L": 0.806853333333333, "time_s": 3.309999999999995, "flow_peak_slpm": 24.46, "flow_average_slpm": 14.599939759036145, "flow_median_slpm": 14.195, "start": {"curveNumber": 0, "pointNumber": 4509, "pointIndex": 4509, "x": 45.09, "y": 9.95}, "end": {"curveNumber": 0, "pointNumber": 4840, "pointIndex": 4840, "x": 48.4, "y": 2.17}}
+2024-01-26T10:07:52 --- {"volume_L": 0.7911158333333332, "time_s": 3.1599999999999966, "flow_peak_slpm": 24.46, "flow_average_slpm": 14.979179810725551, "flow_median_slpm": 14.42, "start": {"curveNumber": 0, "pointNumber": 4524, "pointIndex": 4524, "x": 45.24, "y": 1.24}, "end": {"curveNumber": 0, "pointNumber": 4840, "pointIndex": 4840, "x": 48.4, "y": 2.17}}
+2024-01-26T10:08:05 --- {"volume_L": 0.7419241666666665, "time_s": 1.990000000000002, "flow_peak_slpm": 41.36, "flow_average_slpm": 22.281800000000004, "flow_median_slpm": 20.130000000000003, "start": {"curveNumber": 0, "pointNumber": 4324, "pointIndex": 4324, "x": 43.24, "y": 9.13}, "end": {"curveNumber": 0, "pointNumber": 4523, "pointIndex": 4523, "x": 45.230000000000004, "y": 0.5}}
+2024-01-26T10:08:17 --- {"volume_L": 0.7417891666666665, "time_s": 1.9799999999999969, "flow_peak_slpm": 41.36, "flow_average_slpm": 22.39125628140704, "flow_median_slpm": 20.17, "start": {"curveNumber": 0, "pointNumber": 4324, "pointIndex": 4324, "x": 43.24, "y": 9.13}, "end": {"curveNumber": 0, "pointNumber": 4522, "pointIndex": 4522, "x": 45.22, "y": 1.12}}
+2024-01-26T10:08:32 --- {"volume_L": 0.8007858333333329, "time_s": 3.259999999999998, "flow_peak_slpm": 24.34, "flow_average_slpm": 14.721345565749234, "flow_median_slpm": 14.19, "start": {"curveNumber": 0, "pointNumber": 5016, "pointIndex": 5016, "x": 50.160000000000004, "y": 9.78}, "end": {"curveNumber": 0, "pointNumber": 5342, "pointIndex": 5342, "x": 53.42, "y": 8.55}}
+2024-01-26T10:08:45 --- {"volume_L": 0.7836175000000005, "time_s": 3.0800000000000054, "flow_peak_slpm": 24.34, "flow_average_slpm": 15.237443365695789, "flow_median_slpm": 14.55, "start": {"curveNumber": 0, "pointNumber": 5033, "pointIndex": 5033, "x": 50.33, "y": 4.43}, "end": {"curveNumber": 0, "pointNumber": 5341, "pointIndex": 5341, "x": 53.410000000000004, "y": 8.9}}

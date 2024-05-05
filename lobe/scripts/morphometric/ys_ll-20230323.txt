@@ -1,0 +1,179 @@
+{
+  "baseUnits": "mm",
+  "lobeProperties": {
+      "lobePosition": "ll",
+      "generationNumbering": "Weibel",
+      "approximationStartGeneration": 3,
+      "peripheralStartGeneration": 10,
+      "terminalBronchiolesStartGeneration": 15,
+      "extrusionStartOffset": 2,
+      "lobeVolume": 1685410,
+      "alveolarVolume": 1191220
+    },
+  "airwayProperties": [
+    {
+      "generation": 0,
+      "length": 100,
+      "equivalentDiameter": 20.0902,
+      "generationVolume": 31730
+    },
+    {
+      "generation": 1,
+      "length": 56.3,
+      "equivalentDiameter": 13.8198,
+      "generationVolume": 8420
+    },
+    {
+      "generation": 2,
+      "length": 14.2,
+      "equivalentDiameter": 11.5073,
+      "generationVolume": 1470
+    },
+    {
+      "generation": 3,
+      "length": 13.3,
+      "equivalentDiameter": 12.8159,
+      "generationVolume": 1710
+    },
+    {
+      "generation": 4,
+      "length": 11.3,
+      "equivalentDiameter": 13.5875,
+      "generationVolume": 1640
+    },
+    {
+      "generation": 5,
+      "length": 8.91,
+      "equivalentDiameter": 15.7973,
+      "generationVolume": 1750
+    },
+    {
+      "generation": 6,
+      "length": 10.2,
+      "equivalentDiameter": 18.1595,
+      "generationVolume": 2640
+    },
+    {
+      "generation": 7,
+      "length": 8.36,
+      "equivalentDiameter": 20.6527,
+      "generationVolume": 2800
+    },
+    {
+      "generation": 8,
+      "length": 7.78,
+      "equivalentDiameter": 25.2817,
+      "generationVolume": 3910
+    },
+    {
+      "generation": 9,
+      "length": 7.71,
+      "equivalentDiameter": 33.7195,
+      "generationVolume": 6880
+    },
+    {
+      "generation": 10,
+      "length": 6.11,
+      "equivalentDiameter": 45.7655,
+      "generationVolume": 10050
+    },
+    {
+      "generation": 11,
+      "length": 5.44,
+      "equivalentDiameter": 47.7399,
+      "generationVolume": 9740
+    },
+    {
+      "generation": 12,
+      "length": 4.31,
+      "equivalentDiameter": 47.7399,
+      "generationVolume": 7390
+    },
+    {
+      "generation": 13,
+      "length": 3.02,
+      "equivalentDiameter": 47.7399,
+      "generationVolume": 5050
+    },
+    {
+      "generation": 14,
+      "length": 2.24,
+      "equivalentDiameter": 48.6382,
+      "generationVolume": 4160
+    },
+    {
+      "generation": 15,
+      "length": 1.88,
+      "equivalentDiameter": 55.2099,
+      "generationVolume": 4500
+    },
+    {
+      "generation": 16,
+      "length": 1.52,
+      "equivalentDiameter": 70.404,
+      "generationVolume": 5920
+    },
+    {
+      "generation": 17,
+      "length": 1.24,
+      "equivalentDiameter": 92.3205,
+      "generationVolume": 8300
+    },
+    {
+      "generation": 18,
+      "length": 1.03,
+      "equivalentDiameter": 125.438,
+      "generationVolume": 12730
+    },
+    {
+      "generation": 19,
+      "length": 0.87,
+      "equivalentDiameter": 170.1572,
+      "generationVolume": 19780
+    },
+    {
+      "generation": 20,
+      "length": 0.76,
+      "equivalentDiameter": 235.5206,
+      "generationVolume": 33110
+    },
+    {
+      "generation": 21,
+      "length": 0.66,
+      "equivalentDiameter": 325.834,
+      "generationVolume": 55030
+    },
+    {
+      "generation": 22,
+      "length": 0.59,
+      "equivalentDiameter": 450.5597,
+      "generationVolume": 94070
+    },
+    {
+      "generation": 23,
+      "length": 0.53,
+      "equivalentDiameter": 622.7069,
+      "generationVolume": 161410
+    }
+  ],
+  "latticeProperties": [
+    {
+      "startGeneration": 3,
+      "endGeneration": 9,
+      "hydraulicDiameter": 5.11,
+      "unitCell": "Weaire-Phelan",
+      "dimensionlessRadius": 0.09,
+      "cellDimension": 13.3537,
+      "porosity": 0.6246
+    },
+    {
+      "startGeneration": 10,
+      "endGeneration": 23,
+      "hydraulicDiameter": 0.9014,
+      "unitCell": "Weaire-Phelan",
+      "dimensionlessRadius": 0.09,
+      "cellDimension": 2.3556,
+      "porosity": 0.6246
+    }
+  ]
+}

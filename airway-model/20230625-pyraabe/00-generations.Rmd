@@ -1,0 +1,148 @@
+---
+title: "PyRaabe table output"
+author: "irw"
+date: "Created 20230626 -- Last compiled `r format(Sys.Date())`"
+always_allow_html: false
+output:
+  pdf_document:
+    toc: yes
+    keep_tex: true
+  html_document:
+    df_print: paged
+    toc: yes
+    toc_float: yes
+params:
+  verbose: yes
+changes:
+- "20230626 - Created. Adapted from report template"
+editor_options: 
+  chunk_output_type: inline
+---
+
+```{r, include=FALSE}
+if (params$verbose) {
+  knitr::opts_chunk$set(
+    echo = TRUE,
+    warning = TRUE,
+    message = FALSE
+  )
+} else {
+  knitr::opts_chunk$set(
+    echo = FALSE,
+    warning = FALSE,
+    message = FALSE
+  )
+}
+
+knitr::opts_chunk$set(fig.width=120*1/25.4, fig.height=90*1/25.4, dpi=500)
+```
+
+```{r, echo=FALSE}
+if (knitr::is_latex_output()) {
+knitr::asis_output("\\newpage")
+}
+```
+
+```{r, echo=FALSE}
+if (knitr::is_latex_output()) {
+knitr::asis_output("\\newpage")
+}
+```
+
+```{r}
+# Setup chunk
+
+parent <- "airway-model/20230625-pyraabe/"
+
+make_path <- function(local_path, parent_dir = parent) {
+  path = here::here(paste0(parent_dir, local_path))
+}
+
+# Load libraries
+library(tidyverse)
+library(here)
+library(jsonlite)
+library(kableExtra)
+library(plotly)
+library(glue)
+library(pracma)
+
+source(here::here("resources/plot/print_ggplot.R"))
+source(here::here("resources/plot/plot_interactive.R"))
+
+knitr::asis_output("# Session Info")
+sessionInfo()
+```
+
+```{r, echo=FALSE}
+if (knitr::is_latex_output()) {
+knitr::asis_output("\\newpage")
+}
+```
+
+---
+# Analysis
+
+## Import
+```{r}
+raabe <- read_csv(here::here("airway-model/20230625-pyraabe/ioc-tb_raabe.csv")) %>% 
+  rename("index" = `...1`) %>% 
+  mutate(
+    generation = 0
+  )
+
+raabe
+```
+  
+```{r}
+# Functions
+# Python implementation is cleaner. Here for comparison
+# 20230717 - R does have for _ in _ syntax, so it may be possible to clean this up in the future
+set_daughter_generation <- function(raabe, parent_gen_number, parent_airway_index_0) {
+  # Change from 0-based (Python) to 1-based indexing (R)
+  parent_airway_index = parent_airway_index_0 +1
+  
+  # Set generation of daughter branches
+  daughter_gen = parent_gen_number + 1
+  
+  # Update generation of daughter branch
+  raabe$generation[parent_airway_index] = daughter_gen
+  
+  # Repeat for daughter branches
+  daughter_branches <- raabe$daughter_branches[parent_airway_index] %>% 
+    str_extract_all(pattern = "([0-9]+)") %>% 
+    unlist()
+  
+  daughter_branches <- daughter_branches[!is.na(daughter_branches)]
+  daughter_branches <- as.integer(daughter_branches)
+
+  if (length(daughter_branches) > 0) {
+    try(
+    raabe <- daughter_branches %>% set_daughter_generation(raabe, daughter_gen, .)
+  )
+  }
+  
+  return(raabe)
+}
+```
+
+```{r}
+set_daughter_generation(raabe, -1, 0)
+```
+
+```{r}
+r_generations <- read_csv(make_path("ioc-tb_raabe-generations-r.csv"))
+python_generations <- read_csv(make_path("ioc-tb_raabe-generations.csv")) %>% 
+  select(-`Unnamed: 0`) %>% 
+  rename(index = `...1`)
+
+dplyr::all_equal(python_generations, r_generations)
+```
+
+`dplyr::all_equal()` shows differences, but visual inspection suggests that the
+results are the same.
+
+```{r}
+
+```
+

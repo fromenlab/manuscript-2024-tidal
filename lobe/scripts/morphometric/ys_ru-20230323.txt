@@ -1,0 +1,173 @@
+{
+  "baseUnits": "mm",
+  "lobeProperties": {
+      "lobePosition": "ru",
+      "generationNumbering": "Weibel",
+      "approximationStartGeneration": 3,
+      "peripheralStartGeneration": 8,
+      "terminalBronchiolesStartGeneration": 14,
+      "extrusionStartOffset": 3,
+      "lobeVolume": 842720,
+      "alveolarVolume": 596260
+    },
+  "airwayProperties": [
+    {
+      "generation": 0,
+      "length": 100,
+      "equivalentDiameter": 20.0902,
+      "generationVolume": 31730
+    },
+    {
+      "generation": 1,
+      "length": 30.9,
+      "equivalentDiameter": 17.5172,
+      "generationVolume": 7430
+    },
+    {
+      "generation": 2,
+      "length": 12.2,
+      "equivalentDiameter": 10.2179,
+      "generationVolume": 1000
+    },
+    {
+      "generation": 3,
+      "length": 8,
+      "equivalentDiameter": 10.7641,
+      "generationVolume": 730
+    },
+    {
+      "generation": 4,
+      "length": 12.7,
+      "equivalentDiameter": 13.0131,
+      "generationVolume": 1690
+    },
+    {
+      "generation": 5,
+      "length": 12.5,
+      "equivalentDiameter": 16.3907,
+      "generationVolume": 2630
+    },
+    {
+      "generation": 6,
+      "length": 8.27,
+      "equivalentDiameter": 18.1595,
+      "generationVolume": 2140
+    },
+    {
+      "generation": 7,
+      "length": 9.88,
+      "equivalentDiameter": 20.0902,
+      "generationVolume": 3130
+    },
+    {
+      "generation": 8,
+      "length": 7.98,
+      "equivalentDiameter": 22.2265,
+      "generationVolume": 3100
+    },
+    {
+      "generation": 9,
+      "length": 5.57,
+      "equivalentDiameter": 24.4366,
+      "generationVolume": 2610
+    },
+    {
+      "generation": 10,
+      "length": 4.01,
+      "equivalentDiameter": 25.2817,
+      "generationVolume": 2010
+    },
+    {
+      "generation": 11,
+      "length": 3.5,
+      "equivalentDiameter": 26.7023,
+      "generationVolume": 1960
+    },
+    {
+      "generation": 12,
+      "length": 2.5,
+      "equivalentDiameter": 28.1643,
+      "generationVolume": 1560
+    },
+    {
+      "generation": 13,
+      "length": 1.94,
+      "equivalentDiameter": 31.6751,
+      "generationVolume": 1530
+    },
+    {
+      "generation": 14,
+      "length": 1.43,
+      "equivalentDiameter": 37.1166,
+      "generationVolume": 1550
+    },
+    {
+      "generation": 15,
+      "length": 1.19,
+      "equivalentDiameter": 47.9661,
+      "generationVolume": 2150
+    },
+    {
+      "generation": 16,
+      "length": 1.02,
+      "equivalentDiameter": 62.7241,
+      "generationVolume": 3150
+    },
+    {
+      "generation": 17,
+      "length": 0.89,
+      "equivalentDiameter": 85.0786,
+      "generationVolume": 5060
+    },
+    {
+      "generation": 18,
+      "length": 0.78,
+      "equivalentDiameter": 115.1997,
+      "generationVolume": 8130
+    },
+    {
+      "generation": 19,
+      "length": 0.7,
+      "equivalentDiameter": 159.2974,
+      "generationVolume": 13950
+    },
+    {
+      "generation": 20,
+      "length": 0.63,
+      "equivalentDiameter": 225.2806,
+      "generationVolume": 25110
+    },
+    {
+      "generation": 21,
+      "length": 0.57,
+      "equivalentDiameter": 311.3529,
+      "generationVolume": 43400
+    },
+    {
+      "generation": 22,
+      "length": 0.53,
+      "equivalentDiameter": 440.3195,
+      "generationVolume": 80710
+    }
+  ],
+  "latticeProperties": [
+    {
+      "startGeneration": 3,
+      "endGeneration": 7,
+      "hydraulicDiameter": 5.596,
+      "unitCell": "Weaire-Phelan",
+      "dimensionlessRadius": 0.09,
+      "cellDimension": 14.6237,
+      "porosity": 0.6246
+    },
+    {
+      "startGeneration": 8,
+      "endGeneration": 22,
+      "hydraulicDiameter": 0.9027,
+      "unitCell": "Weaire-Phelan",
+      "dimensionlessRadius": 0.09,
+      "cellDimension": 2.3589,
+      "porosity": 0.6246
+    }
+  ]
+}

@@ -1,0 +1,182 @@
+---
+title: "Comparison - Volume, SA"
+author: "irw"
+date: "Last compiled `r format(Sys.Date())`"
+always_allow_html: false
+output:
+  html_document:
+    df_print: paged
+    toc: yes
+    toc_float: yes
+  pdf_document:
+    toc: yes
+    keep_tex: true
+params:
+  verbose: yes
+changes:
+- "2023mmDD - Created. Adapted from report template"
+editor_options: 
+  chunk_output_type: inline
+---
+
+```{r, include = F}
+
+child_chunk = knitr::opts_knit$get("child")
+
+```
+
+
+```{r, eval = !child_chunk, include=FALSE}
+if (params$verbose) {
+  knitr::opts_chunk$set(
+    echo = TRUE,
+    warning = TRUE,
+    message = FALSE
+  )
+} else {
+  knitr::opts_chunk$set(
+    echo = FALSE,
+    warning = FALSE,
+    message = FALSE
+  )
+}
+
+
+
+knitr::opts_chunk$set(fig.width=120*1/25.4, fig.height=90*1/25.4, dpi=500,
+                      fig.retina = 1)
+```
+
+```{r, eval = !child_chunk, echo=FALSE}
+if (knitr::is_latex_output()) {
+knitr::asis_output("\\newpage")
+}
+```
+
+```{r, eval = !child_chunk}
+# Setup chunk
+
+# Load libraries
+library(tidyverse)
+library(here)
+library(jsonlite)
+library(kableExtra)
+library(plotly)
+
+source(here::here("resources/constants/constants.R"))
+source(here::here("resources/utils/make_path.R"))
+source(here::here("resources/utils/get_paths.R"))
+source(here::here("resources/utils/prep_json.R"))
+source(here::here("resources/utils/capitalize.R"))
+source(here::here("resources/reports/table_functions.R"))
+source(here::here("resources/plot/print_ggplot.R"))
+source(here::here("resources/plot/plot_interactive.R"))
+
+knitr::asis_output("# Session Info")
+sessionInfo()
+```
+
+```{r, eval = !child_chunk, echo=FALSE}
+if (knitr::is_latex_output()) {
+knitr::asis_output("\\newpage")
+}
+```
+
+---
+# Analysis
+
+```{r}
+parent <- "lobe/comparison-vol-sa"
+```
+  
+```{r}
+data <- read_csv(make_path("dims.csv"))
+
+data <- data %>% 
+  mutate(region = factor(region, levels = c(c("airways", "alveoli") %>% rev(), c("c", "p", "e", "compressible") %>% rev())),
+         lobe = recode_factor(factor(lobe), "ru" = "RU", "rm" = "RM", "rl" = "RL", "lu" = "LU", "ll" = "LL"),
+         region = recode_factor(region, 
+                                "alveoli" = "Alveoli",
+                                "airways" = "Airways",
+                                "compressible" = "Compressible",
+                                "e" = "Extrusion",
+                                "p" = "Peripheral (P)",
+                                "c" = "Central (C)"
+                                ),
+         src = recode_factor(factor(src), "ys" = "Lung", "lattice" = "TIDAL"))
+```
+  
+## Volume
+  
+```{r, fig.width = 130/25.4, fig.height = 50/25.4, dpi = 500}
+knitr::opts_chunk$set(fig.width = 130/25.4, fig.height = 45/25.4, dpi = 500)
+
+(data %>% 
+  subset(src == "Lung") %>% 
+  ggplot() + 
+  geom_bar(aes(x = lobe, y = v, fill = region), color = "black", stat="identity", position = "stack") +
+  guides(fill = guide_legend(title = "Region")) + 
+  labs(y = "Volume (mL)", x = "Lobe") + 
+  scale_fill_manual(values = c(
+    RColorBrewer::brewer.pal(3, "Blues")[1],
+    RColorBrewer::brewer.pal(3, "Blues")[3]
+  )) +
+  coord_cartesian(expand = F, ylim = c(0, 2000)) + 
+  theme_bw() + 
+  theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank())) %>% 
+print(width = 5, height = 2.5)
+
+(data %>% 
+  ggplot() + 
+  geom_bar(aes(x = src, y = v, fill = region), color = "black", stat="identity", position = "stack",
+           linewidth = 0.1) +
+  facet_grid(~lobe) + 
+  guides(fill = guide_legend(title = "Region")) + 
+  labs(y = "Volume (mL)", x = "") + 
+  scale_fill_manual(values = c(
+    RColorBrewer::brewer.pal(3, "Blues")[1],
+    RColorBrewer::brewer.pal(3, "Blues")[3],
+    RColorBrewer::brewer.pal(3, "Blues")[1:4]
+  )) + 
+    scale_y_continuous(limits = c(0, 2000), expand = expansion(mult = c(0, 0.1)))+
+  theme_bw(base_size = 8) + 
+  theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank()))
+```
+
+## Surface area
+
+```{r, fig.width = 130/25.4, fig.height = 50/25.4, dpi = 500}
+knitr::opts_chunk$set(fig.width = 130/25.4, fig.height = 50/25.4, dpi = 500)
+
+(data %>% 
+  subset(src == "Lung") %>% 
+  ggplot() + 
+  geom_bar(aes(x = lobe, y = sa, fill = region), color = "black", stat="identity", position = "stack") +
+  guides(fill = guide_legend(title = "Region")) + 
+  labs(y = expression("Surface Area (m"^2*")"), x = "Lobe") + 
+  scale_fill_manual(values = c(
+    RColorBrewer::brewer.pal(3, "Reds")[1],
+    RColorBrewer::brewer.pal(3, "Reds")[3]
+  )) +
+  coord_cartesian(expand = F, ylim = c(0, 30)) + 
+  theme_bw() + 
+  theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank()))
+
+(data %>% 
+  ggplot() + 
+  geom_bar(aes(x = src, y = sa, fill = region), color = "black", stat="identity", position = "stack") +
+  facet_grid(~lobe) + 
+  guides(fill = guide_legend(title = "Region")) + 
+  labs(y = expression("Surface Area (m"^2*")"), x = "") + 
+  scale_fill_manual(values = c(
+    RColorBrewer::brewer.pal(3, "Reds")[1],
+    RColorBrewer::brewer.pal(3, "Reds")[3],
+    RColorBrewer::brewer.pal(3, "Reds")[3:4]
+  )) + 
+  coord_cartesian(expand = F, ylim = c(0, 30)) + 
+  theme_bw(base_size = 8) + 
+  theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank()))
+```
+
+  
+  

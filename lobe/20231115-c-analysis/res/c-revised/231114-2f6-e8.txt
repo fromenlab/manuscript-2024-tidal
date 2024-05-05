@@ -1,0 +1,123 @@
+{
+    "morphometric_path": "ys_rl-20230323.txt",
+    "part_id": "231114-2f6-e8",
+    "date_utc": "2023-11-14T16:54:21",
+    "computation": {
+        "gh_file": "\\lobe\\scripts\\_lobe-graded.gh",
+        "base_unit": "millimeter",
+        "device": "f1f73e03-bcf2-89ec-6a24-438b192c57c0",
+        "rhino_build": "6.35.21222.17001",
+        "rhino_date": "2021-08-10T00:00:00",
+        "gh_build": "1.0.0007",
+        "gh_date": "Tuesday, 10 August 2021 17:00",
+        "core_dependencies": [
+            "Math Components 1.0.0.0",
+            "Curve Components 1.0.0.0",
+            "Transform Components 1.0.0.0",
+            "Surface Components 1.0.0.0",
+            "Vector Components 1.0.0.0",
+            "Grasshopper 1.0.0007"
+        ],
+        "addon_dependencies": [
+            " ",
+            "Mesh - Meshing 0.1",
+            "Primitive - Prepare (Origin) 0.1",
+            "jSwan 1.2.0",
+            "DendroGH 0.9.1-alpha",
+            "Logging - Combine JSON 0.1",
+            "Populate - Lattice (Uniform) 0.1"
+        ]
+    },
+    "primitive_properties": {
+        "input_shape": "central"
+    },
+    "lattice_properties": {
+        "voxelization": "Nov2021-Simplified",
+        "unit_cell": "Weaire-Phelan",
+        "cell_length": 13.196899999999999,
+        "strut_radius": 1.1877209999999998,
+        "dimensionless_radius": 0.089999999999999997
+    },
+    "volume_settings": {
+        "voxel_size": 0.050000000000000003,
+        "bandwidth": 1.0,
+        "isovalue": 0.0,
+        "adaptivity": 0.90000000000000002
+    },
+    "derived_properties": {
+        "lattice_volume": 4837.1124533991197,
+        "lattice_surface_area": 7056.6452301759437
+    },
+    "original_report": {
+        "report_version": "original_report",
+        "valid_mesh": "True",
+        "naked_edges": "0",
+        "closed_mesh": "True",
+        "manifold_mesh": "(True, True, False)",
+        "disjoint_count": "9",
+        "vertex_count": "174986",
+        "memory_estimate_mb": "30.41464",
+        "log_invalid": "None"
+    },
+    "modified_report": {
+        "report_version": "modified_report",
+        "valid_mesh": "True",
+        "naked_edges": "0",
+        "closed_mesh": "True",
+        "manifold_mesh": "(True, True, False)",
+        "disjoint_count": "9",
+        "vertex_count": "174986",
+        "memory_estimate_mb": "39.95428",
+        "log_invalid": "None",
+        "degenerate_faces": "(0, 0)",
+        "quads_to_tris": "True",
+        "mesh_flipped": "False"
+    },
+    "grading_properties": {
+        "grading_radius": "0.09 To 0.09",
+        "graded_generations": [
+            {
+                "generation": 4.0,
+                "porosity": 0.57759864708914221,
+                "ssa_mm": 1.008337412745552,
+                "dh_mm": 2.2912911483326894
+            },
+            {
+                "generation": 5.0,
+                "porosity": 0.57238468954645105,
+                "ssa_mm": 0.92470589923336,
+                "dh_mm": 2.4759642607276295
+            },
+            {
+                "generation": 6.0,
+                "porosity": 0.5814117364178113,
+                "ssa_mm": 0.86036312900855039,
+                "dh_mm": 2.7030992696667884
+            },
+            {
+                "generation": 7.0,
+                "porosity": 0.57494909548247142,
+                "ssa_mm": 0.89522093445375672,
+                "dh_mm": 2.568970734954013
+            },
+            {
+                "generation": 8.0,
+                "porosity": 0.55607213180942638,
+                "ssa_mm": 0.87366740118845931,
+                "dh_mm": 2.5459213932120868
+            },
+            {
+                "generation": 9.0,
+                "porosity": 0.5930254803157311,
+                "ssa_mm": 0.78062047095375842,
+                "dh_mm": 3.0387390665846894
+            },
+            {
+                "generation": 10.0,
+                "porosity": 0.62823541614937439,
+                "ssa_mm": 0.67672915401867362,
+                "dh_mm": 3.7133639797763989
+            }
+        ]
+    }
+}

@@ -1,0 +1,34 @@
+2023-11-30T11:03:24 --- 
+Device ID: TSI
+Alignment: Inhale
+Temperature (C): 20.8
+Relative Humidity (%): 19
+Notes: 
+Flow meter warming; NRBV on with exhale bag. Previous run did not have exhale bag.
+
+2023-11-30T11:05:15 --- 
+Device ID: TSI
+Alignment: Inhale
+Temperature (C): 20.8
+Relative Humidity (%): 19
+Notes: 
+Flow meter warming; NRBV on with exhale bag. Previous run did not have exhale bag.
+
+2023-11-30T11:05:46 --- 2023-11-30T16:05:46
+Device ID: TSI
+Alignment: Inhale
+Temperature (C): 20.8
+Relative Humidity (%): 19
+Notes: 
+Flow meter warming; NRBV on with exhale bag. Previous run did not have exhale bag.
+Previous run showed error on communication with flow meter
+
+2023-11-30T11:06:03 --- 2023-11-30T16:06:03
+Device ID: TSI
+Alignment: Inhale
+Temperature (C): 20.8
+Relative Humidity (%): 19
+Notes: 
+Flow meter warming; NRBV on with exhale bag. Previous run did not have exhale bag.
+Previous run showed error on communication with flow meter. Solved by disconnecting and reconnecting
+

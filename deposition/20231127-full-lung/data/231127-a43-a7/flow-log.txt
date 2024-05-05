@@ -1,0 +1,13 @@
+---
+2023-11-27T12:29:01
+
+Device ID: TSI
+Alignment: Inhale
+Temperature (C): 20.8
+Relative Humidity (%): 31
+Notes: 
+Starting at "from home -> ex" position
+Repeating conditions of 1126 run to confirm
+
+
+

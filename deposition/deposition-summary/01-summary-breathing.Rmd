@@ -1,0 +1,166 @@
+---
+title: "Breathing Summary"
+author: "irw"
+date: "Created 2023mmDD -- Last compiled `r format(Sys.Date())`"
+always_allow_html: false
+output:
+  pdf_document:
+    toc: yes
+    keep_tex: false
+  html_document:
+    df_print: paged
+    toc: yes
+    toc_float: yes
+params:
+  verbose: true
+changes:
+- "Adapted from report template"
+---
+
+```{r, include = F}
+
+child_chunk = knitr::opts_knit$get("child")
+
+```
+
+
+```{r, eval = !child_chunk, include=FALSE}
+if (params$verbose) {
+  knitr::opts_chunk$set(
+    echo = TRUE,
+    warning = TRUE,
+    message = FALSE
+  )
+} else {
+  knitr::opts_chunk$set(
+    echo = FALSE,
+    warning = FALSE,
+    message = FALSE
+  )
+}
+
+
+
+knitr::opts_chunk$set(fig.width=120*1/25.4, fig.height=90*1/25.4, dpi=500,
+                      fig.retina = 1)
+```
+
+```{r, echo=FALSE}
+if (knitr::is_latex_output()) {
+knitr::asis_output("\\newpage")
+}
+```
+
+```{r, eval = !child_chunk}
+# Setup chunk
+
+# Load libraries
+library(tidyverse)
+library(here)
+library(jsonlite)
+library(kableExtra)
+library(plotly)
+library(glue)
+library(pracma)
+library(car)
+
+source(here::here("resources/utils/make_path.R"))
+source(here::here("resources/plot/print_ggplot.R"))
+source(here::here("resources/plot/plot_interactive.R"))
+
+source(here::here("resources/reports/table_functions.R"))
+source(here::here("breathing/scripts/breaths_table.R"))
+source(here::here("breathing/scripts/breathing_analysis.R"))
+
+knitr::asis_output("# Session Info")
+sessionInfo()
+```
+
+```{r, eval = !child_chunk, echo=FALSE}
+if (knitr::is_latex_output()) {
+knitr::asis_output("\\newpage")
+}
+```
+
+# Breathing profiles
+
+## Shallow tidal
+
+```{r, fig.width = 170/3/25.4, fig.height = 40/25.4, dpi = 500, fig.retina = 1}
+knitr::opts_chunk$set(fig.width = 170/3/25.4, fig.height = 40/25.4, dpi = 500)
+
+shallow_breath0 <- bind_rows(
+  readRDS(here::here("deposition/20231127-full-lung/data/breaths0_231127-a43-a7.Rds")),
+  readRDS(here::here("deposition/20231130-full-lung/data/breaths0_231130-b15-8d.Rds")),
+  readRDS(here::here("deposition/20231204-full-lung/data/breaths0_231204-a9b-f7.Rds"))
+)
+
+shallow_breath0 %>% 
+  plot_flow_time(use_alpha=T, alpha=0.2) +
+  coord_cartesian(xlim = c(0, 0.125), ylim = c(-30, 50)) +
+  guides(color = "none") +
+  theme_bw(base_size = 8)
+```
+
+## Deep tidal
+
+```{r, fig.width = 170/3/25.4, fig.height = 40/25.4, dpi = 500, fig.retina=1}
+knitr::opts_chunk$set(fig.width = 170/3/25.4, fig.height = 40/25.4, dpi = 500)
+
+deep_breath0 <- bind_rows(
+  readRDS(here::here("deposition/20231218-full-lung/data/breaths0_231218-0fc-62.Rds")),
+  readRDS(here::here("deposition/20231220-full-lung/data/breaths0_231220-c93-56.Rds")),
+  readRDS(here::here("deposition/20231222-full-lung/data/breaths0_231222-107-71.Rds"))
+)
+
+deep_breath0 %>% 
+  plot_flow_time(use_alpha=T, alpha=0.2) +
+  coord_cartesian(xlim = c(0, 0.125), ylim = c(-30, 50)) +
+    guides(color = "none") +
+  theme_bw(base_size = 8)
+```
+
+
+## Shallow tidal - uniform lattice
+
+```{r, fig.width = 170/3/25.4, fig.height = 40/25.4}
+knitr::opts_chunk$set(fig.width = 170/3/25.4, fig.height = 40/25.4)
+
+uniform_breath0 <- bind_rows(
+  readRDS(here::here("deposition/20240123-full-lung/data/breaths0_240123-3b5-d4.Rds")),
+  readRDS(here::here("deposition/20240126-full-lung/data/breaths0_240126-68b-fc.Rds")),
+  readRDS(here::here("deposition/20240221-full-lung/data/breaths0_240221-b4f-80.Rds"))
+)
+
+uniform_breath0 %>% 
+  plot_flow_time(use_alpha=T, alpha=0.2) +
+  coord_cartesian(xlim = c(0, 0.125), ylim = c(-30, 50)) +
+    guides(color = "none") +
+  theme_bw(base_size = 8)
+```
+
+# Summary statistics
+
+## Shallow tidal
+
+```{r, results='asis'}
+  shallow_breath0 %>% 
+  mutate(name = "shallow_tidal") %>% 
+  print_breath_summary(formatted_only = !params$verbose, trim = F)
+```
+
+## Deep tidal
+
+```{r, results='asis'}
+deep_breath0 %>% 
+  mutate(name = "deep_tidal") %>% 
+  print_breath_summary(formatted_only = !params$verbose, trim = F)
+```
+
+## Shallow tidal - uniform lattice
+
+```{r, results='asis'}
+uniform_breath0 %>% 
+  mutate(name = "uniform_tidal") %>% 
+  print_breath_summary(formatted_only = !params$verbose, trim = F)
+```

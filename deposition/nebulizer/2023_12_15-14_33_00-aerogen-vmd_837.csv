@@ -1,0 +1,39 @@
+Instrument Name,Optical Particle Sizer
+Model Number,3330
+Serial Number,3330221501
+Firmware Version,1.4
+Calibration Date,2023/08/03
+Protocol Name_Number,aerogen-vmd_837
+Test Start Time,14:33:00
+Test Start Date,2023/12/15
+Test Length [D:H:M:S],0:0:1:0
+Sample Interval [H:M:S],0:1:0
+Number Channels Enabled,12
+Bin 1 Cut Point (um),0.300
+Bin 2 Cut Point (um),0.600
+Bin 3 Cut Point (um),1.000
+Bin 4 Cut Point (um),1.500
+Bin 5 Cut Point (um),2.000
+Bin 6 Cut Point (um),2.500
+Bin 7 Cut Point (um),3.000
+Bin 8 Cut Point (um),3.525
+Bin 9 Cut Point (um),4.168
+Bin 10 Cut Point (um),5.000
+Bin 11 Cut Point (um),6.000
+Bin 12 Cut Point (um),8.000
+Bin 13 Cut Point (um),10.000
+Bin 14 Cut Point (um),
+Bin 15 Cut Point (um),
+Bin 16 Cut Point (um),
+Bin 17 Cut Point (um),
+Alarm,0.000 #/cm3
+Density,1.000
+Refractive Index,0.000-0.000j
+Size Correction Factor,0.000
+FlowCal,1.000
+DeadTime Correction Factor,1.000
+Errors,
+Number of Samples,1
+,
+Elapsed Time [s],Bin 1,Bin 2,Bin 3,Bin 4,Bin 5,Bin 6,Bin 7,Bin 8,Bin 9,Bin 10,Bin 11,Bin 12,Bin 13,Bin 14,Bin 15,Bin 16,Bin 17,Deadtime (s),Temperature (C),Humidity (%),Ambient Pressure (kPa),Alarms,Errors,
+60,31626,12704,26771,42798,48574,48396,34186,35092,34994,46674,71137,45545,28757,,,,,10.775620,26.782,0.000,102.390,,,

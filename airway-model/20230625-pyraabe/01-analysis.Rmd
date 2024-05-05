@@ -1,0 +1,194 @@
+---
+title: "PyRaabe table output"
+author: "irw"
+date: "Created 20230626 -- Last compiled `r format(Sys.Date())`"
+always_allow_html: false
+output:
+  pdf_document:
+    toc: yes
+    keep_tex: true
+  html_document:
+    df_print: paged
+    toc: yes
+    toc_float: yes
+params:
+  verbose: yes
+changes:
+- "20230626 - Created. Adapted from report template"
+editor_options: 
+  chunk_output_type: inline
+---
+
+```{r, include=FALSE}
+if (params$verbose) {
+  knitr::opts_chunk$set(
+    echo = TRUE,
+    warning = TRUE,
+    message = FALSE
+  )
+} else {
+  knitr::opts_chunk$set(
+    echo = FALSE,
+    warning = FALSE,
+    message = FALSE
+  )
+}
+
+knitr::opts_chunk$set(fig.width=120*1/25.4, fig.height=90*1/25.4, dpi=500)
+```
+
+```{r, echo=FALSE}
+if (knitr::is_latex_output()) {
+knitr::asis_output("\\newpage")
+}
+```
+
+```{r, echo=FALSE}
+if (knitr::is_latex_output()) {
+knitr::asis_output("\\newpage")
+}
+```
+
+```{r}
+# Setup chunk
+
+parent <- "airway-model/20230625-pyraabe/"
+
+make_path <- function(local_path, parent_dir = parent) {
+  path = here::here(paste0(parent_dir, local_path))
+}
+
+# Load libraries
+library(tidyverse)
+library(here)
+library(jsonlite)
+library(kableExtra)
+library(plotly)
+library(glue)
+library(pracma)
+
+source(here::here("resources/plot/print_ggplot.R"))
+source(here::here("resources/plot/plot_interactive.R"))
+
+knitr::asis_output("# Session Info")
+sessionInfo()
+```
+
+```{r, echo=FALSE}
+if (knitr::is_latex_output()) {
+knitr::asis_output("\\newpage")
+}
+```
+
+---
+# Analysis
+
+## Import
+
+```{r}
+python_generations <- read_csv(make_path("ioc-tb_raabe-generations.csv")) %>% 
+  select(-`Unnamed: 0`) %>% 
+  rename(index = `...1`)
+```
+
+```{r}
+python_generations %>% 
+  group_by(generation) %>% 
+    summarise(
+      diameter_mean = mean(diameter), 
+      diameter_sd = sd(diameter), 
+      length_mean = mean(length),
+      length_sd = sd(length),
+      n = n())
+```
+
+Points to the ambiguity in characterizing airways. Supports truncation at lobar
+bronchi and approximation beyond.
+
+# Export
+
+## Raabe table
+```{r}
+raabe <- read_csv(here::here("airway-model/20230625-pyraabe/ioc-tb_raabe.csv")) %>% 
+  rename("index" = `...1`)
+
+raabe %>% 
+   mutate_if(is.numeric, format, digits=2, nsmall = 2) %>% 
+  mutate(
+    index = as.integer(index)
+  ) %>% 
+  kbl(booktabs = T, longtable = T, 
+      col.names = c(
+        "Index",
+        "Raabe No.",
+        "Diameter (mm)",
+        "Length (mm)",
+        "Bifurcation angle ()",
+        "Gravity angle ()",
+        "Approximate volume (mm)",
+        "Daughter branches"
+      )) %>% 
+  row_spec(0, bold = T) %>% 
+    kable_paper(full_width = F) %>% 
+    kable_styling(font_size = 9)
+```
+
+## Summarized by generation
+```{r}
+python_generations %>% 
+  group_by(generation) %>% 
+    summarise(
+      n = n(),
+      length_mean = mean(length),
+      length_sd = sd(length),
+      diameter_mean = mean(diameter), 
+      diameter_sd = sd(diameter)
+      ) %>% 
+  mutate_if(is.numeric, format, digits=2, nsmall = 2) %>%
+  mutate(
+    generation = as.integer(generation),
+    n = as.integer(n),
+    length_formatted = glue("{length_mean} ({length_sd})"),
+    diameter_formatted = glue("{diameter_mean} ({diameter_sd})")
+  ) %>% 
+  select(generation, n, length_formatted, diameter_formatted) %>% 
+  kbl(booktabs = T, col.names = c("Generation", "n", "Length (mm)", "Diameter (mm)")) %>% 
+  row_spec(0, bold = T) %>% 
+    kable_paper(full_width = F) %>% 
+    kable_styling(latex_options = c("hold_position"))
+```
+
+## Plots
+
+```{r}
+knitr::opts_chunk$set(fig.width=120*1/25.4, fig.height=90*1/25.4, 
+                      fig.retina = 1, dpi=500)
+```
+
+
+```{r}
+knitr::opts_chunk$set(fig.width = 85/2/25.4, fig.height = 50/25.4)
+
+
+python_generations %>% 
+  ggplot(aes(x = generation %>% factor(), y = diameter)) +
+  # geom_violin(draw_quantiles = c(0.25, 0.5, 0.75)) +
+  # geom_point(alpha = 0.4) +
+  geom_jitter(width = 0.1, alpha = 0.3) +
+  coord_cartesian(ylim = c(0,NA)) +
+  labs(x = "Generation", y = "Airway Diameter (mm)") +
+  theme_bw(base_size = 8) +
+  theme()
+
+
+python_generations %>% 
+  ggplot(aes(x = generation %>% factor(), y = length)) +
+  # geom_violin(draw_quantiles = c(0.25, 0.5, 0.75)) +
+  # geom_point(alpha = 0.4) +
+  geom_jitter(width = 0.1, alpha = 0.3) +
+  coord_cartesian(ylim = c(0,NA)) +
+  labs(x = "Generation", y = "Airway Length (mm)") +
+  theme_bw(base_size = 8) +
+  theme()
+```
+

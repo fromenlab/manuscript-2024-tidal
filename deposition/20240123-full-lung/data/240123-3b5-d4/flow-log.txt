@@ -1,0 +1,16 @@
+2024-01-23T10:29:42 --- 
+Device ID: TSI 4000
+Alignment: 
+Temperature (C): 20.8
+Relative Humidity (%): 19
+Notes: 
+Volume test2 for expt1, include the valve.
+
+2024-01-23T10:30:17 --- 
+Device ID: TSI 4000
+Alignment: 
+Temperature (C): 20.8
+Relative Humidity (%): 19
+Notes: 
+Volume test2 for expt1, include the valve.
+

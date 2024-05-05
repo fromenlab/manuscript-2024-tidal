@@ -1,0 +1,235 @@
+---
+title: "Transform TIDAL results to planar C:P"
+author: "irw"
+date: "Created 20240207 -- Last compiled `r format(Sys.Date())`"
+always_allow_html: false
+output:
+  html_document:
+    df_print: paged
+    toc: yes
+    toc_float: yes
+  pdf_document:
+    toc: yes
+    keep_tex: false
+params:
+  verbose: yes
+changes:
+- "Adapted from report template"
+editor_options: 
+  chunk_output_type: inline
+---
+
+```{r, include = F}
+
+child_chunk = knitr::opts_knit$get("child")
+
+```
+
+
+```{r, eval = !child_chunk, include=FALSE}
+if (params$verbose) {
+  knitr::opts_chunk$set(
+    echo = TRUE,
+    warning = TRUE,
+    message = FALSE
+  )
+} else {
+  knitr::opts_chunk$set(
+    echo = FALSE,
+    warning = FALSE,
+    message = FALSE
+  )
+  }
+
+
+
+knitr::opts_chunk$set(fig.width=120*1/25.4, fig.height=90*1/25.4, 
+                      fig.retina = 1, dpi=500)
+```
+
+
+```{r, echo=FALSE}
+if (knitr::is_latex_output()) {
+knitr::asis_output("\\newpage")
+}
+```
+
+```{r, eval = !child_chunk}
+# Setup chunk
+
+# Load libraries
+library(tidyverse)
+library(here)
+library(jsonlite)
+library(kableExtra)
+library(plotly)
+library(glue)
+library(pracma)
+library(car)
+
+source(here::here("resources/utils/make_path.R"))
+source(here::here("resources/utils/capitalize.R"))
+source(here::here("resources/plot/print_ggplot.R"))
+source(here::here("resources/plot/plot_interactive.R"))
+
+knitr::asis_output("# Session Info")
+sessionInfo()
+```
+
+```{r, eval = !child_chunk, echo=FALSE}
+if (knitr::is_latex_output()) {
+knitr::asis_output("\\newpage")
+}
+```
+
+```{r}
+parent <- "deposition/cp-transform"
+```
+
+Original reference:
+
+-	Schroeter JD, Pritchard JN, Hwang D, Martonen TB. Airway identification within planar gamma camera images using computer models of lung morphology. Pharm Res. 2005;22(10):1692-9.
+
+NOTE: This is based on a symmetric airway model, using Weibel numbering.
+
+Fraction reference:
+
+- On the Validation of Generational Lung Deposition Computer Models Using Planar Scintigraphic Images: The Case of Mimetikos Preludium. Bo Olsson and Stavros C. Kassinos. Journal of Aerosol Medicine and Pulmonary Drug Delivery 2021 34:2, 115-123
+
+
+```{r}
+cip_frac <- read_csv(make_path("res/map.csv"))
+
+cip_transform <- cip_frac %>% select(-G) %>% t()
+
+# Split I equally between c, p
+cp_frac <- cip_frac %>% 
+  mutate(
+    c = C+I/2,
+    p = P+I/2,
+    s = c+p
+  )
+
+cp_transform <- cp_frac %>% 
+  select(c,p) %>% 
+  t()
+  
+```
+
+Average generation regions used in TIDAL algorithm
+
+C: G3-G8
+P: G9+
+
+```{r}
+# Convention: trueRegion_tidalRegion
+
+g_start = 3
+g_end = 8
+
+# Get the fraction of regional deposition from the c region in TIDAL
+cp_frac_ctidal <- cp_frac %>% 
+  slice(g_start:g_end) %>% 
+  select(c,p) %>% 
+  summarize(across(.cols = c(c,p), mean, .names = "{.col}"))
+
+# Get the fraction of regional deposition from the p region in TIDAL
+cp_frac_ptidal <- cp_frac %>% 
+  slice(g_end+1:n()) %>% 
+  select(c,p) %>% 
+  summarize(across(.cols = c(c,p), mean, .names = "{.col}"))
+
+cp_transform <- bind_rows(
+  cp_frac_ctidal,
+  cp_frac_ptidal
+  ) %>% 
+  t() 
+
+# Confirm that fractions add to 1
+cp_transform[,1] %>% sum()
+cp_transform[,2] %>% sum()
+
+# Check condition number
+cp_transform %>% kappa()
+
+```
+
+
+```{r}
+cp_tidal <- 0.8
+p_basis <- 1
+
+c_tidal <- cp_tidal * p_basis
+p_tidal <- p_basis
+
+# Planar C:P
+cp_transform %*% matrix(c(c_tidal, p_tidal)) %>% 
+  (function(x) {x[1]/x[2]})
+```
+
+```{r}
+# Make it a function
+convert_to_planar <- function(cp_tidal, p_basis = 1) {
+  c_tidal <- cp_tidal * p_basis
+  p_tidal <- p_basis
+  
+  cp_planar <- cp_transform %*% matrix(c(c_tidal, p_tidal)) %>% 
+  (function(x) {x[1]/x[2]})
+  
+  return(cp_planar)
+}
+
+cp_tidal_series = seq(0,10,0.1);
+plot(cp_tidal_series, lapply(cp_tidal_series, convert_to_planar))
+```
+
+# Compare experimental results
+
+```{r}
+exp_data <- tibble(
+  designator = c("shallow", "deep", "uniform"),
+  tidal = c(0.69, 0.53, 1.75)
+) %>% mutate(
+  planar = map(tidal, convert_to_planar) %>% unlist()
+)
+
+exp_data
+```
+
+## Plot
+
+```{r, fig.width = 170/3/25.4, fig.height = 40/25.4}
+knitr::opts_chunk$set(fig.width = 170/3/25.4, fig.height = 40/25.4)
+
+conversion_plot <- (
+  tibble(
+  x = cp_tidal_series,
+  y = lapply(x, convert_to_planar) %>% unlist()
+) %>% 
+  ggplot() +
+  geom_line(aes(x = x, y = y)) +
+  labs(x = "TIDAL C:P", y = "Planar C:P") +
+  theme_bw(base_size = 8)
+)
+
+conversion_plot + 
+  geom_point(data = exp_data, aes(x = tidal, y = planar, shape = designator)) +
+    scale_shape_manual(
+    guide = guide_legend("", title.position = "top"),
+    breaks = exp_data$designator,
+    labels = c("A, B", "C, D", "E, F"),
+    values = c(19, 15, 1)
+  ) +
+  theme(legend.position = "none")
+
+conversion_plot +
+  geom_point(data = exp_data, aes(x = tidal, y = planar, shape = designator)) +
+  scale_shape_manual(
+    guide = guide_legend("", title.position = "top"),
+    breaks = exp_data$designator,
+    labels = c("A, B", "C, D", "E, F"),
+    values = c(19, 15, 1)
+  ) +
+  theme(legend.position = "bottom")
+
+```

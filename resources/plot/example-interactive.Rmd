@@ -1,0 +1,222 @@
+---
+title: "Sizing plots interactively"
+author: "irw"
+date: "`r format(Sys.Date())` (Last compiled)"
+output:
+  html_document:
+    df_print: paged
+    toc: yes
+    toc_float: yes
+  pdf_document:
+    toc: yes
+changes:
+  - "Created 20230207"
+  - "20240212 - Set seed, discuss interactive vs knit"
+---
+
+```{r}
+library(tidyverse)
+library(here)
+```
+
+# tldr;
+
+Get the same output from interactive sessions and knitting by loading this modified plot function and setting chunk options in the chunk braces and explicitly. Use `fig.retina = 1` if you're on a high-resolution display.
+
+```{r, include = T, eval=F, fig.width = 1, fig.height = 1, dpi = 500, fig.retina = 1}
+source(here::here("resources/plot/print_ggplot.R"))
+knitr::opts_chunk$set(fig.width = 1, fig.height = 1, dpi = 500)
+# plot
+```
+
+
+# Interactive plots
+
+Set up the data
+
+```{r}
+# Set seed for reproducibility
+set.seed(10)
+
+df <- data.frame(
+  gp = factor(rep(letters[1:3], each = 10)),
+  y = rnorm(30)
+)
+ds <- do.call(rbind, lapply(split(df, df$gp), function(d) {
+  data.frame(mean = mean(d$y), sd = sd(d$y), gp = d$gp)
+}))
+```
+
+If you run without `print_ggplot.R` sourced, the interactive output will appear based on the chunk options. However, the resolution won't be correct. 
+If you set the dimensions manually, it appears to be at 384 DPI if copied from the interactive output -- or 192 DPI if copied from the knitted output.
+
+```{r fig.width=1, fig.height=1}
+# The summary data frame ds is used to plot larger red points on top
+# of the raw data. Note that we don't need to supply `data` or `mapping`
+# in each layer because the defaults from ggplot() are used.
+p <- ggplot(df, aes(gp, y)) +
+  geom_point() +
+  geom_point(data = ds, aes(y = mean), colour = 'red', size = 3) +
+  theme_bw()
+
+p
+```
+
+You can also set font sizes. The default `base_size` is 11 pt.
+
+[https://ggplot2.tidyverse.org/reference/ggtheme.html](https://ggplot2.tidyverse.org/reference/ggtheme.html)
+
+You'll notice that copying the interactive output doesn't match the font size. 
+To get a matched font size, the resolution must be 192 DPI... but now the figure is twice as large as you wanted (if you copy from the interactive output). If you copy from the knitted output, the figure size and font size are correct at 192 DPI.
+
+Interactive output
+- Right figure size @ 384 DPI
+- Wrong (halved) font size @ 384 DPI
+
+Knitted output
+- Right figure size @ 192 DPI
+- True (specified) font size @ 192 DPI
+
+```{r fig.width=1, fig.height=1}
+p + 
+  theme_bw(base_size = 6)
+
+p + 
+  theme_bw(base_size = 8)
+
+p + 
+  theme_bw(base_size = 10)
+
+p + 
+  theme_bw(base_size = 11)
+```
+
+You could double the base size to get around resizing the figure from the specified dimensions (inches). This doesn't fix the resolution issue, however.
+
+Interactive output
+
+- Right figure size @ 384 DPI
+- Intended (half) font size @ 384 DPI
+
+Knitted output
+
+- Right figure size @ 192 DPI
+- True (specified) font size @ 192 DPI -- but you actually wanted half of that
+
+```{r fig.width=1, fig.height=1}
+p + 
+  theme_bw(base_size = 12)
+
+p + 
+  theme_bw(base_size = 16)
+
+p + 
+  theme_bw(base_size = 20)
+
+p + 
+  theme_bw(base_size = 22)
+```
+
+To set the resolution manually, you can specify the chunk option. This only works for knitted output. But now the resolution is different from the specified value when you use either the interactive or knitted output.
+
+Interactive output
+
+- Right figure size @ 384 DPI
+- Intended (half) font size @ 384 DPI
+
+Knitted output
+
+- Right figure size @ 1000 DPI (Doubled!)
+- True (specified) font size @ 1000 DPI
+
+```{r fig.width=1, fig.height=1, dpi = 500}
+p + 
+  theme_bw(base_size = 6)
+
+p + 
+  theme_bw(base_size = 8)
+
+p + 
+  theme_bw(base_size = 10)
+
+p + 
+  theme_bw(base_size = 11)
+```
+
+# Modified plot function
+
+Try running _with_ the plot modifications.
+
+Still set the properties within the braces to control knit output.
+
+Set the properties within the chunk to control interactive output.
+However, knitting doubles the DPI of the output. This is because on high-resolution displays, the fig.retina parameter defaults to 2.
+Manually set it to 1 if you want the exact dimensions and resolution to match when you copy and paste plots from both interactive and knit output.
+
+```{r}
+source(here::here("resources/plot/print_ggplot.R"))
+```
+
+## Without setting `fig.retina`
+
+Interactive output
+
+- Right figure size @ right DPI
+- Right font size @ right DPI
+
+Knitted output
+
+- Right figure size @ double DPI
+- Right font size @ double DPI
+
+```{r, fig.width = 1, fig.height = 1, dpi = 500}
+knitr::opts_chunk$set(fig.width = 1, fig.height = 1, dpi = 500)
+
+p
+
+p + 
+  theme_bw(base_size = 6)
+```
+
+
+## With setting `fig.retina = 1`
+
+Interactive output
+
+- Right figure size @ right DPI
+- Right font size @ right DPI
+
+Knitted output
+
+- Right figure size @ right DPI
+- Right font size @ right DPI
+
+```{r, fig.width = 1, fig.height = 1, dpi = 500, fig.retina = 1}
+knitr::opts_chunk$set(fig.width = 1, fig.height = 1, dpi = 500)
+
+p
+
+p + 
+  theme_bw(base_size = 6)
+
+p + 
+  theme_bw(base_size = 8)
+
+p + 
+  theme_bw(base_size = 10)
+
+p + 
+  theme_bw(base_size = 11)
+```
+
+# Mix and match
+
+If you want to preview at one resolution and build at another, you can follow the steps above.
+
+Alternatively, call print explicitly to set plot size for interactive session.
+This approach does not require setting chunk options.
+
+```{r fig.width=5, fig.height=5, dpi=300, fig.retina=1}
+p %>% print(width = 5, height = 5, dpi = 96)
+# 96 dpi for PowerPoint default
+```

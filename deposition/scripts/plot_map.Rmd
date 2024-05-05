@@ -1,0 +1,77 @@
+```{r}
+library(reticulate)
+```
+
+
+```{python}
+def plot_lung(fill_list, template_path, out_path):
+  from string import Template
+  with open(template_path) as t:
+    template = Template(t.read())
+    
+    subbed = template.substitute(
+      mt_fill = fill_list['mt_fill'],
+      tb_fill = fill_list['tb_fill'],
+      ru_c_fill = fill_list['ru_c_fill'],
+      ru_p_fill = fill_list['ru_p_fill'],
+      rm_c_fill = fill_list['rm_c_fill'],
+      rm_p_fill = fill_list['rm_p_fill'],
+      rl_c_fill = fill_list['rl_c_fill'],
+      rl_p_fill = fill_list['rl_p_fill'],
+      lu_c_fill = fill_list['lu_c_fill'],
+      lu_p_fill = fill_list['lu_p_fill'],
+      ll_c_fill = fill_list['ll_c_fill'],
+      ll_p_fill = fill_list['ll_p_fill']
+      
+  )
+    with open(out_path, "w") as output:
+      output.write(subbed)
+```
+
+```{r}
+plot_lung <- function(plot, descriptor, svg_file) {
+  # Build plot
+  fpb <- ggplot_build(plot)
+  
+  fills <- bind_cols(fpb[["plot"]][["data"]], 
+                     fill = fpb$data[[1]]$fill)
+  
+  fill_list <- list(
+    "mt_fill" = fills %>% subset(lobe == "mt") %>% .$fill,
+    "tb_fill" = fills %>% subset(lobe == "tb") %>% .$fill,
+    "ru_c_fill" = fills %>% subset(lobe == "ru" & region == "c") %>% .$fill,
+    "ru_p_fill" = fills %>% subset(lobe == "ru" & region == "p") %>% .$fill,
+    "rm_c_fill" = fills %>% subset(lobe == "rm" & region == "c") %>% .$fill,
+    "rm_p_fill" = fills %>% subset(lobe == "rm" & region == "p") %>% .$fill,
+    "rl_c_fill" = fills %>% subset(lobe == "rl" & region == "c") %>% .$fill,
+    "rl_p_fill" = fills %>% subset(lobe == "rl" & region == "p") %>% .$fill,
+    "lu_c_fill" = fills %>% subset(lobe == "lu" & region == "c") %>% .$fill,
+    "lu_p_fill" = fills %>% subset(lobe == "lu" & region == "p") %>% .$fill,
+    "ll_c_fill" = fills %>% subset(lobe == "ll" & region == "c") %>% .$fill,
+    "ll_p_fill" = fills %>% subset(lobe == "ll" & region == "p") %>% .$fill
+  )
+  
+ py$plot_lung(fill_list, svg_file, make_path(paste0(descriptor, ".svg"))) 
+}
+```
+
+```{r}
+plot_bar <- function(dep_data) {
+  breaks <- c(
+    seq(from = 0, to = 20, length.out = 11),
+    seq(from = 0, to = 100, by = 10)
+  )
+  
+  breaks <- breaks %>% sort() %>% unique()
+  
+  full_plot <- dep_data %>%
+    ggplot() +
+    geom_bar(aes(x = lobe, y = pct, fill = pct), color = "black", stat="identity", position = "stack") +
+    labs(y = "RhB (%)", x = "Lobe") +
+    scale_fill_distiller(palette = "Reds", limits = c(0,20), breaks = breaks, direction = 1,
+                         label = function(x) format(x, digits = 2, nsmall=0)) +
+    guides(fill = guide_legend(title = "% Deposited",
+                               title.position = "top",
+                               direction = "horizontal"))
+}
+```

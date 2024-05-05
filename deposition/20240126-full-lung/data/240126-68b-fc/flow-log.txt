@@ -1,0 +1,8 @@
+2024-01-26T10:04:24 --- 
+Device ID: TSI 4000
+Alignment: 
+Temperature (C): 20.5
+Relative Humidity (%): 49
+Notes: 
+
+

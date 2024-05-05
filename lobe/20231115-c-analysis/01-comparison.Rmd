@@ -1,0 +1,254 @@
+---
+title: "Tidal C lattice grading comparison"
+author: "irw"
+date: "Last compiled `r format(Sys.Date())`"
+always_allow_html: false
+output:
+  html_document:
+    df_print: paged
+    toc: yes
+    toc_float: yes
+  pdf_document:
+    toc: yes
+    keep_tex: true
+params:
+  verbose: yes
+changes:
+- "2023mmDD - Created. Adapted from report template"
+---
+
+```{r, include = F}
+
+child_chunk = knitr::opts_knit$get("child")
+
+```
+
+
+```{r, eval = !child_chunk, include=FALSE}
+if (params$verbose) {
+  knitr::opts_chunk$set(
+    echo = TRUE,
+    warning = TRUE,
+    message = FALSE
+  )
+} else {
+  knitr::opts_chunk$set(
+    echo = FALSE,
+    warning = FALSE,
+    message = FALSE
+  )
+}
+
+
+
+knitr::opts_chunk$set(fig.width=120*1/25.4, fig.height=90*1/25.4, dpi=500,
+                      fig.retina = 1)
+```
+
+```{r, eval = !child_chunk, echo=FALSE}
+if (knitr::is_latex_output()) {
+knitr::asis_output("\\newpage")
+}
+```
+
+```{r, eval = !child_chunk}
+# Setup chunk
+
+# Load libraries
+library(tidyverse)
+library(here)
+library(jsonlite)
+library(kableExtra)
+library(plotly)
+library(glue)
+library(pracma)
+library(car)
+
+source(here::here("resources/utils/make_path.R"))
+source(here::here("resources/plot/print_ggplot.R"))
+source(here::here("resources/plot/plot_interactive.R"))
+
+knitr::asis_output("# Session Info")
+sessionInfo()
+```
+
+```{r, eval = !child_chunk, echo=FALSE}
+if (knitr::is_latex_output()) {
+knitr::asis_output("\\newpage")
+}
+```
+
+## Load data
+
+```{r}
+parent <- "lobe/20231115-c-analysis"
+```
+
+```{r}
+prep_json <- function(path) {
+  read_file(file = path) %>% 
+    paste0("[", ., "]") %>% 
+    fromJSON()
+}
+
+
+# Lattice data
+folder <- make_path("res/c-revised/")
+
+# List files in directory
+files <- list.files(folder)
+
+# Get files that exist
+files <- files[file_test("-f", here::here(paste0(folder, "/", files)))]
+
+# Combine into data frame
+cdata <- here::here(paste0(folder, "/", files)) %>% 
+  lapply(prep_json) %>% 
+  bind_rows()
+```
+
+```{r}
+cdata_plot <- cdata %>% select(
+  lobe = morphometric_path, 
+  grading_properties
+) %>% 
+  unnest(cols = c(grading_properties)) %>% 
+  unnest() %>% 
+  mutate(
+    grading = case_when(
+      grading_radius == "0.09 To 0.03" ~ "graded",
+      TRUE ~ "uniform"
+    ),
+    grading = factor(grading, levels = c("uniform", "graded")),
+    lobe = case_match(lobe,
+                      "ys_ru-20230323.txt" ~ "RU",
+                      "ys_rm-20230323.txt" ~ "RM",
+                      "ys_rl-20230323.txt" ~ "RL",
+                      "ys_lu-20230323.txt" ~ "LU",
+                      "ys_ll-20230323.txt" ~ "LL"),
+    lobe = factor(lobe, levels = c("RU", "RM", "RL", "LU", "LL"))
+  )
+
+graded <- cdata_plot %>% subset(grading == "graded")
+nongraded <- cdata_plot %>% subset(grading == "uniform")
+```
+
+## Plot
+
+```{r, include = F, fig.width = 170/3/25.4, fig.height = 40/25.4, dpi = 500}
+knitr::opts_chunk$set(fig.width = 170/3/25.4, fig.height = 40/25.4)
+
+graded %>% 
+  ggplot(aes(x = generation, y = porosity, color = lobe)) +
+  geom_point() +
+  geom_line() +
+  guides(
+    color = guide_legend("Lobe")
+  ) +
+  labs(x = "Generation", y = expression(epsilon)) +
+  theme_bw(base_size = 6) +
+  theme(legend.position = "right")
+
+graded %>% 
+  ggplot(aes(x = generation, y = ssa_mm, color = lobe)) +
+  geom_point() +
+  geom_line() +
+  guides(
+    color = guide_legend("Lobe")
+  ) +
+  labs(x = "Generation", y = expression(a[v]%.%l[c])) +
+  theme_bw(base_size = 6) +
+  theme(legend.position = "right")
+
+graded %>% 
+  ggplot(aes(x = generation, y = dh_mm, color = lobe)) +
+  geom_point() +
+  geom_line() +
+  guides(
+    color = guide_legend("Lobe")
+  ) +
+  labs(x = "Generation", y = expression(d[h])) +
+  theme_bw(base_size = 6) +
+  theme(legend.position = "right")
+```
+
+```{r, include = F}
+nongraded %>% 
+  ggplot(aes(x = generation, y = porosity, color = lobe)) +
+  geom_point() +
+  geom_line() +
+  guides(
+    color = guide_legend("Lobe")
+  ) +
+  labs(x = "Generation", y = expression(epsilon)) +
+  theme_bw(base_size = 6) +
+  theme(legend.position = "right")
+
+nongraded %>% 
+  ggplot(aes(x = generation, y = ssa_mm, color = lobe)) +
+  geom_point() +
+  geom_line() +
+  guides(
+    color = guide_legend("Lobe")
+  ) +
+  labs(x = "Generation", y = expression(a[v]%.%l[c])) +
+  theme_bw(base_size = 6) +
+  theme(legend.position = "right")
+
+nongraded %>% 
+  ggplot(aes(x = generation, y = dh_mm, color = lobe)) +
+  geom_point() +
+  geom_line() +
+  guides(
+    color = guide_legend("Lobe")
+  ) +
+  labs(x = "Generation", y = expression(d[h])) +
+  theme_bw(base_size = 6) +
+  theme(legend.position = "right")
+```
+
+```{r,  include = F, fig.width=6, fig.height=6, fig.align='center'}
+cdata_plot %>% 
+  pivot_longer(cols = c(porosity, ssa_mm, dh_mm), names_to = "quantity", values_to = "value") %>% 
+  ggplot(aes(x = generation, y = value, color = lobe)) +
+  geom_point() +
+  geom_line() +
+  facet_grid(
+    rows = vars(quantity),
+    cols = vars(grading),
+    scales = "free_y"
+  )
+```
+### Export
+```{r, fig.width = 100/25.4, fig.height = 40/25.4}
+knitr::opts_chunk$set(fig.width = 100/25.4, fig.height = 40/25.4)
+
+# https://ggplot2.tidyverse.org/reference/labeller.html
+capitalize <- function(string) {
+  substr(string, 1, 1) <- toupper(substr(string, 1, 1))
+  string
+}
+
+grading_plot <- cdata_plot %>% 
+  mutate(grading = factor(grading, levels = c("graded", "uniform"))) %>% 
+  ggplot(aes(x = generation, y = dh_mm, color = lobe)) +
+  geom_point() +
+  geom_line() +
+  scale_y_continuous(limits = c(0, NA), expand = expansion(mult = c(0, 0.1))) +
+  scale_color_viridis_d() +
+  guides(
+    color = guide_legend("Lobe",
+                         reverse = F)
+  ) +
+  labs(x = "Generation", y = expression("Hydraulic diameter (mm)")) +
+  theme_bw(base_size = 8) +
+  theme(legend.position = "bottom") +
+  facet_grid(~grading, labeller = labeller(grading = capitalize))
+
+grading_plot
+
+grading_plot +
+  theme(legend.position = "none")
+
+```
+

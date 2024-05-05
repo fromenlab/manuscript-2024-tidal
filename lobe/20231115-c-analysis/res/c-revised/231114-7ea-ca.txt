@@ -1,0 +1,111 @@
+{
+    "morphometric_path": "ys_lu-20230323.txt",
+    "part_id": "231114-7ea-ca",
+    "date_utc": "2023-11-14T15:46:20",
+    "computation": {
+        "gh_file": "\\lobe\\scripts\\_lobe-graded.gh",
+        "base_unit": "millimeter",
+        "device": "f1f73e03-bcf2-89ec-6a24-438b192c57c0",
+        "rhino_build": "6.35.21222.17001",
+        "rhino_date": "2021-08-10T00:00:00",
+        "gh_build": "1.0.0007",
+        "gh_date": "Tuesday, 10 August 2021 17:00",
+        "core_dependencies": [
+            "Math Components 1.0.0.0",
+            "Curve Components 1.0.0.0",
+            "Transform Components 1.0.0.0",
+            "Surface Components 1.0.0.0",
+            "Vector Components 1.0.0.0",
+            "Grasshopper 1.0.0007"
+        ],
+        "addon_dependencies": [
+            " ",
+            "Mesh - Meshing 0.1",
+            "Primitive - Prepare (Origin) 0.1",
+            "jSwan 1.2.0",
+            "DendroGH 0.9.1-alpha",
+            "Logging - Combine JSON 0.1",
+            "Populate - Lattice (Uniform) 0.1"
+        ]
+    },
+    "primitive_properties": {
+        "input_shape": "central"
+    },
+    "lattice_properties": {
+        "voxelization": "Nov2021-Simplified",
+        "unit_cell": "Weaire-Phelan",
+        "cell_length": 14.5139,
+        "strut_radius": 1.3062509999999998,
+        "dimensionless_radius": 0.089999999999999997
+    },
+    "volume_settings": {
+        "voxel_size": 0.050000000000000003,
+        "bandwidth": 1.0,
+        "isovalue": 0.0,
+        "adaptivity": 0.90000000000000002
+    },
+    "derived_properties": {
+        "lattice_volume": 1103.6199724810876,
+        "lattice_surface_area": 2150.4970756057432
+    },
+    "original_report": {
+        "report_version": "original_report",
+        "valid_mesh": "True",
+        "naked_edges": "0",
+        "closed_mesh": "True",
+        "manifold_mesh": "(True, True, False)",
+        "disjoint_count": "4",
+        "vertex_count": "53752",
+        "memory_estimate_mb": "9.354376",
+        "log_invalid": "None"
+    },
+    "modified_report": {
+        "report_version": "modified_report",
+        "valid_mesh": "True",
+        "naked_edges": "0",
+        "closed_mesh": "True",
+        "manifold_mesh": "(True, True, False)",
+        "disjoint_count": "4",
+        "vertex_count": "53752",
+        "memory_estimate_mb": "12.269584",
+        "log_invalid": "None",
+        "degenerate_faces": "(0, 0)",
+        "quads_to_tris": "True",
+        "mesh_flipped": "False"
+    },
+    "grading_properties": {
+        "grading_radius": "0.09 To 0.03",
+        "graded_generations": [
+            {
+                "generation": 3.0,
+                "porosity": 0.90494171186440009,
+                "ssa_mm": 0.64766287357085084,
+                "dh_mm": 5.5889676484005184
+            },
+            {
+                "generation": 4.0,
+                "porosity": 0.83515055826047391,
+                "ssa_mm": 0.73723537360791036,
+                "dh_mm": 4.531256031155328
+            },
+            {
+                "generation": 5.0,
+                "porosity": 0.7758345649731746,
+                "ssa_mm": 0.73444283695559431,
+                "dh_mm": 4.2254319924429078
+            },
+            {
+                "generation": 6.0,
+                "porosity": 0.69068049397817366,
+                "ssa_mm": 0.78608760377520637,
+                "dh_mm": 3.5145217436894436
+            },
+            {
+                "generation": 7.0,
+                "porosity": 0.62512064039578896,
+                "ssa_mm": 0.80430728834131116,
+                "dh_mm": 3.1088647309659412
+            }
+        ]
+    }
+}

@@ -1,0 +1,158 @@
+---
+title: "Load full lung deposition trials"
+author: "irw"
+date: "Created 2023mmDD -- Last compiled `r format(Sys.Date())`"
+always_allow_html: false
+output:
+  html_document:
+    df_print: paged
+    toc: yes
+    toc_float: yes
+  pdf_document:
+    toc: yes
+    keep_tex: true
+params:
+  verbose: yes
+changes:
+- "Adapted from report template"
+---
+
+```{r, include = F}
+
+child_chunk = knitr::opts_knit$get("child")
+
+```
+
+
+```{r, eval = !child_chunk, include=FALSE}
+if (params$verbose) {
+  knitr::opts_chunk$set(
+    echo = TRUE,
+    warning = TRUE,
+    message = FALSE
+  )
+} else {
+  knitr::opts_chunk$set(
+    echo = FALSE,
+    warning = FALSE,
+    message = FALSE
+  )
+}
+
+
+
+knitr::opts_chunk$set(fig.width=120*1/25.4, fig.height=90*1/25.4, dpi=500)
+```
+
+```{r, echo=FALSE}
+if (knitr::is_latex_output()) {
+knitr::asis_output("\\newpage")
+}
+```
+
+```{r, eval = !child_chunk}
+# Setup chunk
+
+# Load libraries
+library(tidyverse)
+library(here)
+library(jsonlite)
+library(kableExtra)
+library(plotly)
+library(glue)
+library(pracma)
+library(car)
+
+source(here::here("resources/utils/make_path.R"))
+source(here::here("resources/plot/print_ggplot.R"))
+source(here::here("resources/plot/plot_interactive.R"))
+
+source(here::here("deposition/scripts/dates.R"))
+
+knitr::asis_output("# Session Info")
+sessionInfo()
+```
+
+```{r, eval = !child_chunk, echo=FALSE}
+if (knitr::is_latex_output()) {
+knitr::asis_output("\\newpage")
+}
+```
+
+```{r}
+dates <- c(shallow_dates, deep_dates, uniform_dates)
+
+import_dose_summary <- function(date) {
+  summary_file <- make_path(paste0("data/dose-full-lung.csv"), 
+            parent_dir = paste0("deposition/",date,"-full-lung/"))
+  
+  df <- read_csv(summary_file)
+  
+  df <- df %>% mutate(date = date)
+  
+  return(df)
+}
+
+dose_aggregate <- lapply(dates, import_dose_summary) %>% 
+  bind_rows()
+```
+## Summary
+
+```{r}
+dose_aggregate_percentages <- dose_aggregate %>% 
+  pivot_wider(names_from = quantity, values_from = dose) %>% 
+  mutate(
+    deposited_pct_emitted = deposited_dose / emitted_dose * 100,
+    airway_pct_emitted = airway_dose / emitted_dose * 100,
+    lobe_pct_emitted = lobe_dose / emitted_dose * 100
+      )
+
+get_pct_averages <- function(data) {
+  data %>% 
+    pivot_longer(c(everything(), -date)) %>% 
+    mutate(name = factor(name, levels = c("emitted_dose", "deposited_dose", "deposited_pct_emitted", "airway_dose", "airway_pct_emitted", "lobe_dose", "lobe_pct_emitted"))) %>% 
+    group_by(name) %>% 
+    summarize(
+      across(
+        c(everything(), -date),
+        list(
+          mean = mean,
+          sd = sd,
+          values = list
+        )
+      )
+    )
+}
+
+```
+
+### Statistics
+
+```{r}
+all_tidal_dose <- dose_aggregate_percentages %>% 
+  get_pct_averages()
+
+shallow_tidal_dose <- dose_aggregate_percentages %>% 
+  subset(date %in% shallow_dates) %>% 
+  get_pct_averages()
+
+deep_tidal_dose <- dose_aggregate_percentages %>% 
+  subset(date %in% deep_dates) %>% 
+  get_pct_averages()
+
+shallow_tidal_uniform_dose <- dose_aggregate_percentages %>% 
+  subset(date %in% uniform_dates) %>% 
+  get_pct_averages()
+
+all_tidal_dose
+
+shallow_tidal_dose
+
+deep_tidal_dose
+
+shallow_tidal_uniform_dose
+
+# t.test(shallow_tidal_dose$values, deep_tidal_dose$values)
+# 
+# t.test(shallow_tidal_dose$values, shallow_tidal_uniform_dose$values)
+```

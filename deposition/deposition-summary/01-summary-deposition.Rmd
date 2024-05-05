@@ -1,0 +1,410 @@
+---
+title: "Full lung - map with legend, based on averaged data"
+author: "irw"
+date: "Created 20240130 -- Last compiled `r format(Sys.Date())`"
+always_allow_html: false
+output:
+  html_document:
+    df_print: paged
+    toc: yes
+    toc_float: yes
+  pdf_document:
+    toc: yes
+    keep_tex: false
+params:
+  verbose: no
+changes:
+- "Adapted from report template"
+editor_options: 
+  chunk_output_type: inline
+---
+
+```{r, include = F}
+
+child_chunk = knitr::opts_knit$get("child")
+
+```
+
+
+```{r, eval = !child_chunk, include=FALSE}
+if (params$verbose) {
+  knitr::opts_chunk$set(
+    echo = TRUE,
+    warning = TRUE,
+    message = FALSE
+  )
+} else {
+  knitr::opts_chunk$set(
+    echo = FALSE,
+    warning = FALSE,
+    message = FALSE
+  )
+}
+
+
+
+knitr::opts_chunk$set(fig.width=120*1/25.4, fig.height=90*1/25.4, 
+                      dpi=500, fig.retina = 1)
+```
+
+
+```{r, echo=FALSE}
+if (knitr::is_latex_output()) {
+knitr::asis_output("\\newpage")
+}
+```
+
+```{r, eval = !child_chunk}
+# Setup chunk
+
+# Load libraries
+library(tidyverse)
+library(here)
+library(jsonlite)
+library(kableExtra)
+library(plotly)
+library(glue)
+library(pracma)
+library(car)
+
+library(grImport2)
+library(rsvg)
+library(gridExtra)
+library(grid)
+
+source(here::here("resources/utils/make_path.R"))
+source(here::here("resources/plot/print_ggplot.R"))
+source(here::here("resources/plot/plot_interactive.R"))
+
+source(here::here("deposition/scripts/get_summary_average_deposition.R"))
+source(here::here("deposition/scripts/get_plot_average_deposition.R"))
+source(here::here("deposition/scripts/calc_cp.R"))
+
+knitr::asis_output("# Session Info")
+sessionInfo()
+```
+
+```{r, eval = !child_chunk, echo=FALSE}
+if (knitr::is_latex_output()) {
+knitr::asis_output("\\newpage")
+}
+```
+
+
+```{r, child = '00-import-deposition.Rmd'}
+```
+
+```{r, child = 'plot_map.Rmd'}
+```
+
+```{r, include = F}
+
+child_chunk = knitr::opts_knit$get("child")
+
+```
+
+```{r}
+parent <- "deposition/deposition-summary"
+```
+
+```{r}
+# Plot parameters
+breaks <- c(
+    seq(from = 0, to = 20, by = 2),
+    seq(from = 0, to = 100, by = 10)
+  )
+  
+breaks <- breaks %>% sort() %>% unique()
+
+limits = c(0,20)
+```
+
+# Deposition profiles
+
+```{r}
+shallow_dates <- c(
+  "20231127",
+  "20231130",
+  "20231204"
+)
+deep_dates <- c(
+  "20231218",
+  "20231220",
+  "20231222"
+)
+
+uniform_dates <- c(
+  "20240123",
+  "20240126",
+  "20240221"
+)
+```
+
+## Shallow tidal
+```{r, fig.width = 170/3/25.4, fig.height = 40/25.4}
+knitr::opts_chunk$set(fig.width = 170/3/25.4, fig.height = 40/25.4)
+
+linewidth = 0.2
+
+p <- full_lung_aggregate %>% 
+  subset(date %in% shallow_dates) %>% 
+  get_summary_average_deposition(lobe, region) %>% 
+  mutate(
+    lobe = factor(lobe, levels = c("mt", "tb", "ru", "rm", "rl", "lu", "ll")),
+    region = factor(region, levels = c("c", "p"))
+  ) %>% 
+  ggplot(aes(x = lobe, y = mean, group = region, fill = mean)) + 
+  geom_bar(position = "dodge", stat="identity", color = "black",
+           linewidth = linewidth) + 
+  geom_errorbar(aes(ymin = mean-sd, ymax = mean+sd), width=0.2, position = position_dodge(width = 0.9),
+                linewidth = linewidth) +
+  scale_fill_fermenter(palette = "Reds", limits = limits, breaks = breaks, direction = 1,
+                       na.value = RColorBrewer::brewer.pal(9, "Reds")[9],
+                         label = function(x) format(x, digits = 2, nsmall=0)) +
+  coord_cartesian(ylim = c(0,55)) +
+  scale_y_continuous(expand = expansion(mult = c(0, 0.1)))+
+  scale_x_discrete(
+    labels = c(
+      "mt" = "MT",
+      "tb" = "TB",
+      "ru" = "C | P\nRU",
+      "rm" = "C | P\nRM",
+      "rl" = "C | P\nRL",
+      "lu" = "C | P\nLU",
+      "ll" = "C | P\nLL"
+    )
+  ) +
+  guides(fill = "none") +
+  labs(x = "Region", y = "% of Deposited") +
+  theme_bw(base_size = 8)
+
+p
+```
+
+
+```{r, fig.width = 170/3/25.4, fig.height = 50/25.4}
+
+knitr::opts_chunk$set(fig.width = 170/2/25.4, fig.height = 50/25.4)
+
+p + guides(fill = guide_colorsteps(title = "% of Deposited"))
+
+```
+
+
+## Deep tidal
+```{r, fig.width = 170/3/25.4, fig.height = 40/25.4}
+knitr::opts_chunk$set(fig.width = 170/3/25.4)
+
+full_lung_aggregate %>% 
+  subset(date %in% deep_dates) %>% 
+  get_summary_average_deposition(lobe, region) %>% 
+  mutate(
+    lobe = factor(lobe, levels = c("mt", "tb", "ru", "rm", "rl", "lu", "ll")),
+    region = factor(region, levels = c("c", "p"))
+  ) %>% 
+  ggplot(aes(x = lobe, y = mean, group = region, fill = mean)) + 
+  geom_bar(position = "dodge", stat="identity", color = "black",
+           linewidth = linewidth) + 
+  geom_errorbar(aes(ymin = mean-sd, ymax = mean+sd), width=0.2, position = position_dodge(width = 0.9),
+                linewidth = linewidth) +
+  scale_fill_fermenter(palette = "Reds", limits = limits, breaks = breaks, direction = 1,
+                       na.value = RColorBrewer::brewer.pal(9, "Reds")[9],
+                         label = function(x) format(x, digits = 2, nsmall=0)) +
+  coord_cartesian(ylim = c(0,55)) +
+  scale_y_continuous(expand = expansion(mult = c(0, 0.1)))+
+  scale_x_discrete(
+    labels = c(
+      "mt" = "MT",
+      "tb" = "TB",
+      "ru" = "C | P\nRU",
+      "rm" = "C | P\nRM",
+      "rl" = "C | P\nRL",
+      "lu" = "C | P\nLU",
+      "ll" = "C | P\nLL"
+    )
+  ) +
+  guides(fill = "none") +
+  labs(x = "Region", y = "% of Deposited") +
+  theme_bw(base_size = 8)
+```
+
+## Shallow tidal - uniform
+```{r, fig.width = 170/3/25.4, fig.height = 40/25.4}
+knitr::opts_chunk$set(fig.width = 170/3/25.4, fig.height = 40/25.4)
+
+full_lung_aggregate %>% 
+  subset(date %in% uniform_dates) %>% 
+  get_summary_average_deposition(lobe, region) %>% 
+  mutate(
+    lobe = factor(lobe, levels = c("mt", "tb", "ru", "rm", "rl", "lu", "ll")),
+    region = factor(region, levels = c("c", "p"))
+  ) %>% 
+  ggplot(aes(x = lobe, y = mean, group = region, fill = mean)) + 
+  geom_bar(position = "dodge", stat="identity", color = "black",
+           linewidth = linewidth) + 
+  geom_errorbar(aes(ymin = mean-sd, ymax = mean+sd), width=0.2, position = position_dodge(width = 0.9),
+                linewidth = linewidth) +
+  scale_fill_fermenter(palette = "Reds", limits = limits, breaks = breaks, direction = 1,
+                       na.value = RColorBrewer::brewer.pal(9, "Reds")[9],
+                         label = function(x) format(x, digits = 2, nsmall=0)) +
+  coord_cartesian(ylim = c(0,55)) +
+  scale_y_continuous(expand = expansion(mult = c(0, 0.1)))+
+  scale_x_discrete(
+    labels = c(
+      "mt" = "MT",
+      "tb" = "TB",
+      "ru" = "C | P\nRU",
+      "rm" = "C | P\nRM",
+      "rl" = "C | P\nRL",
+      "lu" = "C | P\nLU",
+      "ll" = "C | P\nLL"
+    )
+  ) +
+  guides(fill = "none") +
+  labs(x = "Region", y = "% of Deposited") +
+  theme_bw(base_size = 8)
+```
+
+# Deposition Maps
+
+```{r, eval=!child_chunk, include=!child_chunk}
+svg_file <- here::here("deposition/scripts/lung-template-0823.svg")
+```
+
+## Shallow tidal
+```{r, eval=!child_chunk, include=!child_chunk}
+plot_descriptor <- "plot/summary-lung-shallow"
+
+get_plot_average_deposition(full_lung_aggregate, shallow_dates) %>% 
+  mutate(pct = mean) %>% 
+  plot_bar() %>% 
+  plot_lung(descriptor = plot_descriptor, svg_file = svg_file)
+
+if (!knitr::is_latex_output()) {
+  knitr::include_graphics(make_path(paste0(plot_descriptor, ".svg")))
+}
+```
+
+## Deep tidal
+```{r, eval=!child_chunk, include=!child_chunk}
+plot_descriptor <- "plot/summary-lung-deep"
+
+get_plot_average_deposition(full_lung_aggregate, deep_dates) %>% 
+  mutate(pct = mean) %>% 
+  plot_bar() %>% 
+  plot_lung(descriptor = plot_descriptor, svg_file = svg_file)
+
+if (!knitr::is_latex_output()) {
+  knitr::include_graphics(make_path(paste0(plot_descriptor, ".svg")))
+}
+```
+
+## Shallow tidal - uniform
+```{r, eval=!child_chunk, include=!child_chunk}
+plot_descriptor <- "plot/summary-lung-shallow-uniform"
+
+get_plot_average_deposition(full_lung_aggregate, uniform_dates) %>% 
+  mutate(pct = mean) %>% 
+  plot_bar() %>% 
+  plot_lung(descriptor = plot_descriptor, svg_file = svg_file)
+
+if (!knitr::is_latex_output()) {
+  knitr::include_graphics(make_path(paste0(plot_descriptor, ".svg")))
+}
+```
+
+# Deposition Calculations
+
+## Regional percentages
+
+### Shallow tidal
+
+```{r}
+full_lung_aggregate %>% 
+  subset(date %in% shallow_dates) %>% 
+  get_summary_average_deposition(lobe)
+
+full_lung_aggregate %>% 
+  subset(date %in% shallow_dates) %>% 
+  get_summary_average_deposition(lobe, region)
+```
+
+
+### Deep tidal
+
+```{r}
+full_lung_aggregate %>% 
+  subset(date %in% deep_dates) %>% 
+  get_summary_average_deposition(lobe)
+
+full_lung_aggregate %>% 
+  subset(date %in% deep_dates) %>% 
+  get_summary_average_deposition(lobe, region)
+```
+
+### Shallow tidal - uniform
+
+```{r}
+full_lung_aggregate %>% 
+  subset(date %in% uniform_dates) %>% 
+  get_summary_average_deposition(lobe)
+
+full_lung_aggregate %>% 
+  subset(date %in% uniform_dates) %>% 
+  get_summary_average_deposition(lobe, region)
+```
+
+## C:P
+
+### Shallow tidal
+
+```{r}
+full_lung_aggregate %>% 
+  subset(date %in% shallow_dates) %>% 
+  get_summary_average_deposition(region)
+```
+
+### Deep tidal
+
+```{r}
+full_lung_aggregate %>% 
+  subset(date %in% deep_dates) %>% 
+  get_summary_average_deposition(region)
+```
+
+### Shallow tidal - uniform
+
+```{r}
+full_lung_aggregate %>% 
+  subset(date %in% uniform_dates) %>% 
+  get_summary_average_deposition(region)
+```
+
+### Statistics
+
+```{r}
+shallow_tidal_cp <- full_lung_aggregate %>% 
+  subset(date %in% shallow_dates) %>% 
+  get_summary_average_deposition(region) %>% 
+  calc_cp()
+
+deep_tidal_cp <- full_lung_aggregate %>% 
+  subset(date %in% deep_dates) %>% 
+  get_summary_average_deposition(region) %>% 
+  calc_cp()
+
+shallow_tidal_uniform_cp <- full_lung_aggregate %>% 
+  subset(date %in% uniform_dates) %>% 
+  get_summary_average_deposition(region) %>% 
+  calc_cp()
+
+shallow_tidal_cp
+
+deep_tidal_cp
+
+shallow_tidal_uniform_cp
+
+t.test(shallow_tidal_cp$values, deep_tidal_cp$values)
+
+t.test(shallow_tidal_cp$values, shallow_tidal_uniform_cp$values)
+```

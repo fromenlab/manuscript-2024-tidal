@@ -1,0 +1,171 @@
+---
+title: "Read Excel"
+author: "irw"
+date: "Created 2023mmDD -- Last compiled `r format(Sys.Date())`"
+always_allow_html: false
+output:
+  html_document:
+    df_print: paged
+    toc: yes
+    toc_float: yes
+  pdf_document:
+    toc: yes
+    keep_tex: true
+params:
+  verbose: yes
+changes:
+- "Adapted from report template"
+---
+
+```{r, include = F}
+
+child_chunk = knitr::opts_knit$get("child")
+
+```
+
+
+```{r, eval = !child_chunk, include=FALSE}
+if (params$verbose) {
+  knitr::opts_chunk$set(
+    echo = TRUE,
+    warning = TRUE,
+    message = FALSE
+  )
+} else {
+  knitr::opts_chunk$set(
+    echo = FALSE,
+    warning = FALSE,
+    message = FALSE
+  )
+}
+
+
+
+knitr::opts_chunk$set(fig.width=120*1/25.4, fig.height=90*1/25.4, dpi=500)
+```
+
+```{r, echo=FALSE}
+if (knitr::is_latex_output()) {
+knitr::asis_output("\\newpage")
+}
+```
+
+```{r, eval = !child_chunk}
+# Setup chunk
+
+make_path <- function(local_path, parent_dir = parent) {
+  path = here::here(paste0(parent_dir, "/", local_path))
+}
+
+# Load libraries
+library(tidyverse)
+library(here)
+library(jsonlite)
+library(kableExtra)
+library(plotly)
+library(glue)
+library(pracma)
+library(car)
+
+source(here::here("resources/plot/print_ggplot.R"))
+source(here::here("resources/plot/plot_interactive.R"))
+
+knitr::asis_output("# Session Info")
+sessionInfo()
+```
+
+```{r, eval = !child_chunk, echo=FALSE}
+if (knitr::is_latex_output()) {
+knitr::asis_output("\\newpage")
+}
+```
+
+## Read range from Excel
+
+```{r}
+date = "20231220"
+parent <- paste0("deposition/",date,"-full-lung/")
+file_name <- paste0(date,"_full_lung_run_CF_analysis.xlsx")
+data_range = "Analysis!AJ18:AQ24"
+mt_cell = "Analysis!AA4"
+tb_cell = "Analysis!AA5"
+```
+
+```{r}
+library(readxl)
+```
+
+```{r}
+# File must not be open elsewhere
+# Get standard analysis output
+d <- make_path(paste0("data/raw/", file_name)) %>% read_excel(range = data_range)
+```
+
+```{r}
+lobe_deposition_mass <- d %>% 
+  subset(!(...1 %in% c("MT/TB"))) %>% 
+  select(...1, C, P) %>% 
+  pivot_longer(cols = c(C,P), names_to = "region", values_to = "mass") %>% 
+  rename(lobe = ...1)
+```
+Read single values for MT and TB
+
+```{r}
+mt_direct <- make_path(paste0("data/raw/", file_name)) %>% 
+  read_excel(range = mt_cell, col_names = F)
+tb_direct <- make_path(paste0("data/raw/", file_name)) %>% 
+  read_excel(range = tb_cell, col_names = F)
+```
+
+```{r}
+lobe_deposition_mass <- bind_rows(
+  lobe_deposition_mass %>% 
+    ungroup(),
+  tribble(
+    ~lobe, ~region, ~mass,
+    "mt", "", mt_direct[1][[1]],
+    "tb", "", tb_direct[1][[1]]
+  )
+) %>% 
+  mutate(
+    lobe = tolower(lobe), 
+    region = tolower(region)
+    )
+
+```
+
+```{r}
+lobe_deposition_mass %>% write_csv(make_path(paste0("data/summary-full-lung-", date, ".csv")))
+```
+
+```{r}
+xlfile <- make_path(paste0("data/raw/", file_name))
+
+emitted_dose <- xlfile %>% 
+  read_excel(range = "Analysis!AD7", col_names = F) %>% 
+  .$...1
+
+deposited_dose <- xlfile %>% 
+  read_excel(range = "Analysis!AD10", col_names = F) %>% 
+  .$...1
+
+lobe_dose <- xlfile %>% 
+  read_excel(range = "Analysis!AD14", col_names = F) %>% 
+  .$...1
+
+confirmed_lobe_dose <- lobe_deposition_mass %>% 
+  subset(region %in% c("c", "p")) %>% 
+  summarize(lobe_dep = sum(mass)) %>% 
+  .$lobe_dep - lobe_dose < 1e-2
+
+if (confirmed_lobe_dose) {
+  tribble(
+    ~quantity, ~dose,
+    "emitted_dose", emitted_dose,
+    "deposited_dose", deposited_dose,
+    "airway_dose", lobe_deposition_mass %>% subset(lobe != "mt") %>% .$mass %>% sum(),
+    "lobe_dose", lobe_dose
+  ) %>% 
+    write_csv(make_path("data/dose-full-lung.csv"))
+}
+```

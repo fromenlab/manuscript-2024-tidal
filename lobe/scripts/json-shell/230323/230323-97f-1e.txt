@@ -1,0 +1,151 @@
+{
+    "systemInfo": {
+        "gh_file": "\\lobe\\scripts\\_lobe.gh",
+        "base_unit": "millimeter",
+        "device": "f1f73e03-bcf2-89ec-6a24-438b192c57c0",
+        "rhino_build": "6.35.21222.17001",
+        "rhino_date": "2021-08-10T00:00:00",
+        "gh_build": "1.0.0007",
+        "gh_date": "Tuesday, 10 August 2021 17:00",
+        "core_dependencies": [
+            "Math Components 1.0.0.0",
+            "Curve Components 1.0.0.0",
+            "Transform Components 1.0.0.0",
+            "Surface Components 1.0.0.0",
+            "Vector Components 1.0.0.0",
+            "Grasshopper 1.0.0007"
+        ],
+        "addon_dependencies": [
+            " ",
+            "jSwan 1.2.0",
+            "Primitive - Prepare (Origin) 0.1",
+            "Weaverbird 0.9.0.1"
+        ]
+    },
+    "morphometricPath": "\\lobe\\scripts\\morphometric/ys_rm-20230323.txt",
+    "lobeShellInputs": {
+        "approximationStartGeneration": 4,
+        "extrusionStartOffset": 3,
+        "porosity": 0.62460000000000004
+    },
+    "cpSplitPoint": "O(0.00,0.00,-40.10) Z(0.00,0.00,1.00)",
+    "airwayHornProperties": [
+        {
+            "generation": 4,
+            "point": "{0, 0, 0}",
+            "equivalentCircle": "Circle(R:4.3702 mm)",
+            "scaledCircle": "Circle(R:5.529684 mm)",
+            "generationVolumeApprox": 985.62837544108731
+        },
+        {
+            "generation": 5,
+            "point": "{0, 0, -13.4}",
+            "equivalentCircle": "Circle(R:5.29255 mm)",
+            "scaledCircle": "Circle(R:6.696748 mm)",
+            "generationVolumeApprox": 1442.5365539607596
+        },
+        {
+            "generation": 6,
+            "point": "{0, 0, -29.7}",
+            "equivalentCircle": "Circle(R:5.32255 mm)",
+            "scaledCircle": "Circle(R:6.734708 mm)",
+            "generationVolumeApprox": 1112.4369473526092
+        },
+        {
+            "generation": 7,
+            "point": "{0, 0, -40.1}",
+            "equivalentCircle": "Circle(R:6.333 mm)",
+            "scaledCircle": "Circle(R:8.013246 mm)",
+            "generationVolumeApprox": 1587.789293669229
+        },
+        {
+            "generation": 8,
+            "point": "{0, 0, -50.5}",
+            "equivalentCircle": "Circle(R:7.5904 mm)",
+            "scaledCircle": "Circle(R:9.604255 mm)",
+            "generationVolumeApprox": 1312.4056825060029
+        },
+        {
+            "generation": 9,
+            "point": "{0, 0, -57.41}",
+            "equivalentCircle": "Circle(R:7.95885 mm)",
+            "scaledCircle": "Circle(R:10.07046 mm)",
+            "generationVolumeApprox": 1095.8171719497734
+        },
+        {
+            "generation": 10,
+            "point": "{0, 0, -62.68}",
+            "equivalentCircle": "Circle(R:8.31105 mm)",
+            "scaledCircle": "Circle(R:10.516105 mm)",
+            "generationVolumeApprox": 872.6540491101423
+        },
+        {
+            "generation": 11,
+            "point": "{0, 0, -66.62}",
+            "equivalentCircle": "Circle(R:8.48165 mm)",
+            "scaledCircle": "Circle(R:10.731968 mm)",
+            "generationVolumeApprox": 667.84339720835351
+        },
+        {
+            "generation": 12,
+            "point": "{0, 0, -69.28}",
+            "equivalentCircle": "Circle(R:9.39 mm)",
+            "scaledCircle": "Circle(R:11.881318 mm)",
+            "generationVolumeApprox": 680.91122168738434
+        },
+        {
+            "generation": 13,
+            "point": "{0, 0, -71.53}",
+            "equivalentCircle": "Circle(R:10.23345 mm)",
+            "scaledCircle": "Circle(R:12.948548 mm)",
+            "generationVolumeApprox": 640.89442996989749
+        },
+        {
+            "generation": 14,
+            "point": "{0, 0, -73.25}",
+            "equivalentCircle": "Circle(R:11.5349 mm)",
+            "scaledCircle": "Circle(R:14.595294 mm)",
+            "generationVolumeApprox": 674.78121776757098
+        },
+        {
+            "generation": 15,
+            "point": "{0, 0, -74.43}",
+            "equivalentCircle": "Circle(R:15.358 mm)",
+            "scaledCircle": "Circle(R:19.432724 mm)",
+            "generationVolumeApprox": 1087.1866763719017
+        },
+        {
+            "generation": 16,
+            "point": "{0, 0, -75.48}",
+            "equivalentCircle": "Circle(R:20.81395 mm)",
+            "scaledCircle": "Circle(R:26.336225 mm)",
+            "generationVolumeApprox": 1726.9573414045581
+        },
+        {
+            "generation": 17,
+            "point": "{0, 0, -76.39}",
+            "equivalentCircle": "Circle(R:28.15865 mm)",
+            "scaledCircle": "Circle(R:35.629591 mm)",
+            "generationVolumeApprox": 2932.2141223887938
+        }
+    ],
+    "airwayExtrusionProperties": {
+        "scaledCircle": "Circle(R:35.629591 mm)",
+        "extrusionDirection": "{0,0,-34.17906}",
+        "extrusionVolume": 136311.24087523978
+    },
+    "approximationVolumes": {
+        "cVolume": 5668.5909009837596,
+        "pHornVolume": 16566.187130395221,
+        "pExtrusionVolume": 136311.24087523978,
+        "totalShellVolume": 158546.01890661882
+    },
+    "alveolarShellProperties": {
+        "compressibleUnitRadius": 40.0,
+        "compressibleMountOffset": 2.0,
+        "mountingRingOffset": 4.0,
+        "wallThickness": 2.0,
+        "lipHeight": 3.0,
+        "internalVolume": 195979.503194867
+    }
+}

@@ -1,0 +1,8 @@
+2023-12-22T12:39:25 --- 
+Device ID: TSI
+Alignment: inhale
+Temperature (C): 20.6
+Relative Humidity (%): 16
+Notes: 
+NRBV on. No exhale collection bag
+

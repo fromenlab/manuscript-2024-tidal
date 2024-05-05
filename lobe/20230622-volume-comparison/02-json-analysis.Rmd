@@ -1,0 +1,686 @@
+---
+title: "Volume comparison"
+author: "irw"
+date: "Created 20230630 -- Last compiled `r format(Sys.Date())`"
+always_allow_html: false
+output:
+  pdf_document:
+    toc: yes
+    keep_tex: true
+  html_document:
+    df_print: paged
+    toc: yes
+    toc_float: yes
+params:
+  verbose: yes
+editor_options: 
+  chunk_output_type: inline
+---
+
+```{r, include=FALSE}
+if (params$verbose) {
+  knitr::opts_chunk$set(
+    echo = TRUE,
+    warning = TRUE,
+    message = FALSE
+  )
+} else {
+  knitr::opts_chunk$set(
+    echo = FALSE,
+    warning = FALSE,
+    message = FALSE
+  )
+}
+
+knitr::opts_chunk$set(fig.width=120*1/25.4, 
+                      fig.height=90*1/25.4, dpi=500,
+                      fig.retina = 1,
+                      dpi = 500)
+```
+
+```{r, echo=FALSE}
+if (knitr::is_latex_output()) {
+knitr::asis_output("\\newpage")
+}
+```
+
+```{r, child='notes.txt', eval=F}
+```
+
+```{r, echo=FALSE}
+if (knitr::is_latex_output()) {
+knitr::asis_output("\\newpage")
+}
+```
+
+```{r}
+# Setup chunk
+
+parent <- "lobe/20230622-volume-comparison/"
+
+# Load libraries
+library(tidyverse)
+library(here)
+library(jsonlite)
+library(kableExtra)
+library(plotly)
+library(pracma)
+
+source(here::here("resources/constants/constants.R"))
+source(here::here("resources/utils/make_path.R"))
+source(here::here("resources/utils/get_paths.R"))
+source(here::here("resources/utils/prep_json.R"))
+source(here::here("resources/utils/capitalize.R"))
+source(here::here("resources/reports/table_functions.R"))
+source(here::here("resources/plot/print_ggplot.R"))
+source(here::here("resources/plot/geom_prismbars.R"))
+source(here::here("resources/plot/plot_interactive.R"))
+
+knitr::asis_output("# Session Info")
+sessionInfo()
+```
+
+```{r, echo=FALSE}
+if (knitr::is_latex_output()) {
+knitr::asis_output("\\newpage")
+}
+```
+
+\newpage
+# Shell part analysis
+
+**Review the dimensions with the printed parts**
+
+## Load data
+
+```{r}
+prep_json <- function(path) {
+  read_file(file = path) %>% 
+    paste0("[", ., "]") %>% 
+    fromJSON()
+}
+
+
+# Lattice data
+folder <- "lobe/scripts/json-shell/230323"
+
+# List files in directory
+files <- list.files(here::here(folder))
+
+# Get files that exist
+files <- files[file_test("-f", here::here(paste0(folder, "/", files)))]
+
+# Combine into data frame
+json_shell <- here::here(paste0(folder, "/", files)) %>% 
+  lapply(prep_json) %>% 
+  bind_rows()
+```
+
+## Prepare data
+
+```{r}
+get_lobe <- function(text) {
+  str_match(string = text, pattern = "_([A-Za-z0-9]+)-")[2]
+}
+json_shell$lobe <- json_shell$morphometricPath %>% 
+  lapply(get_lobe) %>% 
+  unlist()
+```
+
+
+# Lattice Part Analysis
+
+## Load JSON lattice data  
+```{r}
+prep_json <- function(path) {
+  read_file(file = path) %>% 
+    paste0("[", ., "]") %>% 
+    fromJSON()
+}
+
+
+# Lattice data
+folder <- "lobe/scripts/json-lattice/230324"
+
+# List files in directory
+files <- list.files(here::here(folder))
+
+# Get files that exist
+files <- files[file_test("-f", here::here(paste0(folder, "/", files)))]
+
+# Combine into data frame
+json_lattice <- here::here(paste0(folder, "/", files)) %>% 
+  lapply(prep_json) %>% 
+  bind_rows()
+```
+
+\newpage
+
+
+\newpage
+# Total quantities
+
+## Quantities per lobe
+```{r}
+part_quantities <- read_csv(make_path("/data/part_quantities.csv"))
+```
+
+## Clean JSON shell volumes
+
+```{r}
+json_shell_volume <- json_shell %>% 
+  select(lobe, approximationVolumes, alveolarShellProperties) %>% 
+  unnest(cols = c(approximationVolumes, alveolarShellProperties)) %>% 
+  select(lobe, cVolume, pHornVolume, pExtrusionVolume, internalVolume, compressibleUnitRadius) %>% 
+  mutate(
+    compressibleVolume = 4/3*pi*compressibleUnitRadius^3/2
+  ) %>% 
+  select(-compressibleUnitRadius) %>% 
+  pivot_longer(cols = contains("volume"),
+               names_to = "segment",
+               values_to = "volume_mm3") %>% 
+  mutate(
+    region = case_when(
+      segment == "cVolume" ~ "C",
+      segment %in% c("pHornVolume", "pExtrusionVolume") ~ "P",
+      segment %in% c("internalVolume", "compressibleVolume") ~ "A",
+      TRUE ~ NA_character_
+    ),
+    volume_category = "void"
+    )
+
+```
+
+## Clean JSON lattice volumes
+
+```{r}
+json_lattice_volume <- json_lattice %>% 
+  select(morphometric_path, part_id, primitive_properties, derived_properties) %>% 
+  unnest(cols = c(primitive_properties, derived_properties)) %>% 
+  mutate(
+    part = coalesce(lattice_section, input_shape),
+    part = recode_factor(part,
+                         "central" = "C",
+                         "p_top" = "P1",
+                         "p_transition" = "P2",
+                         "p_quarter" = "P3")
+    ) %>% 
+  select(-lattice_section, -input_shape)
+
+json_lattice_volume$lobe <- json_lattice_volume$morphometric_path %>% 
+  lapply(get_lobe) %>% 
+  unlist()
+
+json_lattice_volume <- json_lattice_volume %>% 
+  select(part_id, lobe, part, lattice_volume, lattice_surface_area) %>% 
+  mutate(
+    volume_category = "solid",
+    quantity = case_when(
+      part == "C" ~ 1,
+      part == "P1" | part == "P2" ~ 4,
+      part == "P3" ~ case_when(
+        lobe %in% c("ru", "rm", "lu") ~ 4*2,
+        lobe == "rl" ~ 4*3,
+        lobe == "ll" ~ 4*4
+      ),
+      TRUE ~ NA_real_
+    ),
+    repeat_units = case_when(
+      part == "C" ~ 4,
+      part == "P1" | part == "P2" ~ 1,
+      part == "P3" ~ 3,
+      TRUE ~ NA_real_
+    ),
+    region = case_when(
+      part %in% c("C") ~ "C",
+      part %in% str_c("P", c(1,2,3)) ~ "P"
+    ),
+    part_volume_mm3 = lattice_volume * repeat_units,
+    part_sa_mm2 = lattice_surface_area * repeat_units,
+    volume_mm3 = part_volume_mm3 * quantity,
+    sa_mm2 = part_sa_mm2 * quantity
+  )
+  
+```
+
+## Confirm against Rhino properties
+```{r}
+parent <- "lobe/20230622-volume-comparison/"
+data_folder = "/data/rhino-dimensions-20230622.csv"
+
+rhino_lattice <- read_csv(make_path(data_folder, parent)) %>% 
+  mutate(part_id = name)
+
+left_join(
+  rhino_lattice, json_lattice_volume,
+  by = "part_id"
+) %>% 
+  mutate(
+    delta_vol_pct = (rhinovol - part_volume_mm3)/rhinovol*100,
+    delta_sa_pct = (rhinosa - part_sa_mm2)/rhinosa*100
+    ) %>% 
+  select(part_id, delta_vol_pct, delta_sa_pct) %>% 
+  kbl()
+```
+
+
+
+
+# Volume tables
+
+## Empty shells
+```{r}
+json_shell %>% 
+  mutate(
+    vol_central_ml = approximationVolumes$cVolume * (1/10)^3, # (1 cm / 10 mm)^3
+  vol_peripheral_ml = (approximationVolumes$pHornVolume + approximationVolumes$pExtrusionVolume) * (1/10)^3,
+  vol_alveolar_ml = alveolarShellProperties$internalVolume * (1/10)^3,
+  vol_compressible_ml = (4/3*pi*alveolarShellProperties$compressibleUnitRadius^3)/2 * (1/10)^3,
+  lobe = recode_factor(lobe, 
+                         "ru" = "RU", 
+                         "rm" = "RM",
+                         "rl" = "RL", 
+                         "lu" = "LU", 
+                         "ll" = "LL")
+) %>% 
+  select(lobe, vol_central_ml, vol_peripheral_ml, vol_alveolar_ml, vol_compressible_ml) %>%
+  mutate_if(is.numeric, format, digits=2, nsmall = 2) %>%
+   kbl(booktabs = T,
+      col.names = c(
+        "Lobe",
+        "C Volume (mL)",
+        "P Volume (mL)",
+        "Alveolar Volume (mL)",
+        "Compressible Volume (mL)"
+      )) %>%
+  row_spec(0, bold = T) %>% 
+kable_styling(font_size = 9)
+```
+
+## Lattices
+
+```{r}
+json_lattice_volume %>% 
+  mutate(
+    part_volume_ml = part_volume_mm3 / 1000, # 1 mL / 1000 mm3
+    lobe = recode_factor(lobe, 
+                         "ru" = "RU", 
+                         "rm" = "RM",
+                         "rl" = "RL", 
+                         "lu" = "LU", 
+                         "ll" = "LL"),
+    ) %>% 
+  select(lobe, part, part_volume_ml, part_sa_mm2, quantity) %>% 
+  arrange(lobe, part) %>%
+  mutate_if(is.numeric, format, digits=2, nsmall = 2) %>%
+  kbl(align = "c", booktabs=T, col.names = c("Lobe", "Part", "CAD V (mL)", "CAD SA (mm2)", "Quantity")) %>%
+    kable_paper(full_width = F) %>% 
+    collapse_rows(columns = 1:2, latex_hline = "major", valign = "middle") %>% 
+    kable_styling(latex_options = c("hold_position")) %>% 
+  row_spec(0, bold = T)
+```
+
+
+## Assembly
+
+```{r}
+json_lattice_volume %>% 
+  mutate(
+    volume_ml = volume_mm3 / 1000, # 1 mL / 1000 mm3
+    sa_m2 = sa_mm2 * (1/1000)^2, # 1 m / 1000 mm
+    lobe = recode_factor(lobe, 
+                         "ru" = "RU", 
+                         "rm" = "RM",
+                         "rl" = "RL", 
+                         "lu" = "LU", 
+                         "ll" = "LL"),
+    ) %>% 
+  select(lobe, part, region, volume_ml, sa_m2) %>% 
+  group_by(lobe, region) %>% 
+  summarise(
+    total_vol_ml = sum(volume_ml),
+    tota_sa_m2 = sum(sa_m2)
+  ) %>% 
+  arrange(lobe, region) %>%
+  mutate_if(is.numeric, format, digits=2, nsmall = 2) %>%
+  kbl(align = "c", booktabs=T, col.names = c("Lobe", "Region", "CAD V (mL)", "CAD SA (m2)")) %>%
+    kable_paper(full_width = F) %>% 
+    collapse_rows(columns = 1:2, latex_hline = "major", valign = "middle") %>% 
+    kable_styling(latex_options = c("hold_position")) %>% 
+  row_spec(0, bold = T)
+
+json_lattice_volume %>% 
+  mutate(
+    volume_ml = volume_mm3 / 1000, # 1 mL / 1000 mm3
+    sa_m2 = sa_mm2 * (1/1000)^2, # 1 m / 1000 mm
+    lobe = recode_factor(lobe, 
+                         "ru" = "RU", 
+                         "rm" = "RM",
+                         "rl" = "RL", 
+                         "lu" = "LU", 
+                         "ll" = "LL"),
+    ) %>% 
+  select(lobe, part, region, volume_ml, sa_m2) %>% 
+  group_by(lobe) %>% 
+  summarise(
+    total_vol_ml = sum(volume_ml),
+    tota_sa_m2 = sum(sa_m2)
+  ) %>% 
+  arrange(lobe) %>%
+  mutate_if(is.numeric, format, digits=2, nsmall = 2) %>%
+  kbl(align = "c", booktabs=T, col.names = c("Lobe", "CAD V (mL)", "CAD SA (m2)")) %>%
+    kable_paper(full_width = F) %>% 
+    collapse_rows(columns = 1:2, latex_hline = "major", valign = "middle") %>% 
+    kable_styling(latex_options = c("hold_position")) %>% 
+  row_spec(0, bold = T)
+```
+
+
+```{r}
+cumulative_volume_analysis <- function(data) {
+  lobe_region_category <- data %>% 
+  group_by(lobe, region, volume_category) %>% 
+  summarise(
+    vol = sum(volume_mm3)
+  )
+  
+  lobe_category <- data %>% 
+  group_by(lobe, volume_category) %>% 
+  summarise(
+    vol = sum(volume_mm3)
+  )
+  
+  lobe <- data %>% 
+    group_by(lobe, volume_category) %>% 
+  summarise(
+    vol = sum(volume_mm3)
+  ) %>% 
+  ungroup(volume_category) %>% 
+  mutate(
+    vol = case_when(
+      volume_category == "solid" ~ -1*vol,
+      volume_category == "void" ~ vol
+    )
+  ) %>% 
+  summarise(
+    vol = sum(vol)
+  )
+  
+  total <- data %>% 
+    group_by(lobe, volume_category) %>% 
+  summarise(
+    vol = sum(volume_mm3)
+  ) %>% 
+  ungroup() %>% 
+  mutate(
+    vol = case_when(
+      volume_category == "solid" ~ -1*vol,
+      volume_category == "void" ~ vol
+    )
+  ) %>% 
+  summarise(
+    vol = sum(vol)
+  )
+  
+  return(list(lobe_region_category, lobe_category, lobe, total))
+}
+```
+
+
+### With alveolar shell and compressible
+```{r}
+full_join(json_shell_volume, json_lattice_volume) %>% 
+  mutate(
+    region = factor(region, levels = c("C", "P", "A")),
+    volume_category = factor(volume_category, levels = c("void", "solid"))
+  ) %>% 
+  cumulative_volume_analysis %>% 
+  lapply(kbl) %>% report_list()
+```
+
+### Airways only
+```{r}
+json_shell_volume %>% 
+  subset(segment %in% c("cVolume", "pHornVolume", "pExtrusionVolume")) %>% 
+full_join(json_lattice_volume) %>% 
+  cumulative_volume_analysis 
+```
+## Export Formatting
+
+```{r}
+full_join(json_shell_volume, json_lattice_volume) %>% 
+  mutate(
+    region = factor(region, levels = c("C", "P", "A")),
+    volume_category = factor(volume_category, levels = c("void", "solid")),
+    lobe = recode_factor(lobe, 
+                         "ru" = "RU", 
+                         "rm" = "RM",
+                         "rl" = "RL", 
+                         "lu" = "LU", 
+                         "ll" = "LL")
+  ) %>% 
+  group_by(lobe, region, volume_category) %>%
+  summarise(
+    vol = sum(volume_mm3)/1000
+  ) %>% 
+  mutate(
+    vol = case_when(
+      volume_category == "solid" ~ -1*vol,
+      volume_category == "void" ~ vol
+    )
+  ) %>% 
+  ungroup(volume_category, region) %>% 
+  # summarise(
+  #   vol = sum(vol)
+  # ) %>% 
+  mutate(
+    volpct = cumsum(vol)/sum(vol)*100
+  ) %>% 
+  mutate_if(is.numeric, format, digits=2, nsmall = 2) %>%
+   kbl(booktabs = T,
+      col.names = c(
+        "Lobe",
+        "Region",
+        "Type",
+        "Volume (mL)",
+        "%"
+      )) %>%
+  row_spec(0, bold = T) %>% 
+  kable_styling(font_size = 9) %>% 
+  collapse_rows(columns = 1:2, latex_hline = "major", valign = "middle")
+
+full_join(json_shell_volume, json_lattice_volume) %>% 
+  mutate(
+    region = factor(region, levels = c("C", "P", "A")),
+    volume_category = factor(volume_category, levels = c("void", "solid")),
+    lobe = recode_factor(lobe, 
+                         "ru" = "RU", 
+                         "rm" = "RM",
+                         "rl" = "RL", 
+                         "lu" = "LU", 
+                         "ll" = "LL")
+  ) %>% 
+  group_by(lobe, region, volume_category) %>%
+  summarise(
+    vol = sum(volume_mm3)/1000
+  ) %>% 
+  mutate(
+    vol = case_when(
+      volume_category == "solid" ~ -1*vol,
+      volume_category == "void" ~ vol
+    )
+  ) %>% 
+  summarise(
+    vol = sum(vol)
+  ) %>%
+  mutate(
+    volpct = cumsum(vol)/sum(vol)*100
+  ) %>% 
+  mutate_if(is.numeric, format, digits=2, nsmall = 2) %>%
+   kbl(booktabs = T,
+      col.names = c(
+        "Lobe",
+        "Region",
+        "Volume (mL)",
+        "%"
+      )) %>%
+  row_spec(0, bold = T) %>% 
+  kable_styling(font_size = 9) %>% 
+  collapse_rows(columns = 1:2, latex_hline = "major", valign = "middle")
+
+full_join(json_shell_volume, json_lattice_volume) %>% 
+  mutate(
+    region = factor(region, levels = c("C", "P", "A")),
+    volume_category = factor(volume_category, levels = c("void", "solid")),
+    lobe = recode_factor(lobe, 
+                         "ru" = "RU", 
+                         "rm" = "RM",
+                         "rl" = "RL", 
+                         "lu" = "LU", 
+                         "ll" = "LL")
+  ) %>% 
+  group_by(region, volume_category) %>%
+  summarise(
+    vol = sum(volume_mm3)/1000
+  ) %>% 
+  mutate(
+    vol = case_when(
+      volume_category == "solid" ~ -1*vol,
+      volume_category == "void" ~ vol
+    )
+  ) %>% 
+  summarise(
+    vol = sum(vol)
+  ) %>%
+  mutate(
+    volpct = cumsum(vol)/sum(vol)*100
+  ) %>% 
+  mutate_if(is.numeric, format, digits=2, nsmall = 2) %>%
+   kbl(booktabs = T,
+      col.names = c(
+        "Region",
+        "Volume (mL)",
+        "%"
+      )) %>%
+  row_spec(0, bold = T) %>% 
+  kable_styling(font_size = 9) %>% 
+  collapse_rows(columns = 1:2, latex_hline = "major", valign = "middle")
+```
+
+
+
+\newpage
+# Mass data (Mettler Toledo balance)
+
+## Load mass data
+```{r}
+density_uma = 1.2 # g/cm3 (g/mL)
+
+mass_lattice_updated <- read_csv(make_path("/data/20230620-part-mass-mettler.csv")) %>%
+  select(lobe, part, mass) %>% 
+  mutate(
+    part = recode_factor(part,
+                         "c" = "C",
+                         "p-tr-1" = "P1",
+                         "p-tr-2" = "P2",
+                         "p-quarter" = "P3"),
+    mass = mass / 1000 # 1 g / 1000 mg
+    ) %>%
+  na.omit()
+
+volume_lattice_updated <- mass_lattice_updated %>% 
+  group_by(lobe, part) %>% 
+  summarise(vol_mean = mean(mass)/density_uma, 
+            vol_sd = sd(mass)/density_uma, 
+            n = n())
+
+```
+
+## Compare JSON and mass-volume data
+```{r, eval=F}
+vol_rhino_lab <- left_join(volume_lattice_updated, 
+          json_lattice_volume, 
+          by = c("lobe", "part")) %>% 
+  mutate(
+    json_vol_ml = part_volume_mm3/1000, # 1 mL / 1000 mm3
+    delta_vol = vol_mean - json_vol_ml,
+    delta_vol_pct = delta_vol/json_vol_ml*100
+  )
+
+ggplot(vol_rhino_lab) + geom_point(aes(x = json_vol_ml, y = delta_vol_pct))
+
+ggplot(vol_rhino_lab) + 
+  geom_point(aes(x = json_vol_ml, y = vol_mean+vol_sd, color = "red")) + 
+  geom_point(aes(x = json_vol_ml, y = vol_mean-vol_sd, color = "red")) + 
+  geom_point(aes(x = json_vol_ml, y = vol_mean)) + 
+  geom_abline(slope = 1, intercept = 0) +
+  coord_fixed(ratio = 1)
+```
+
+## Full data
+```{r}
+full_mass_vol <- left_join(
+  mass_lattice_updated %>% mutate(vol = mass/density_uma),
+  json_lattice_volume
+  ) %>% 
+  mutate(
+    part_vol_ml = part_volume_mm3/1000,
+    delta_vol = vol - part_vol_ml,
+    delta_vol_pct = part_vol_ml
+  )
+```
+
+### Export plot (mass parity)
+```{r}
+knitr::opts_chunk$set(fig.width = 35/25.4, fig.height = 35/25.4)
+
+full_mass_vol %>% 
+  ggplot(aes(x = part_vol_ml, y = vol)) +
+  geom_point(alpha = 0.3) +
+  # geom_prismbars() +
+  geom_abline(slope = 1, intercept = 0) +
+  coord_fixed(ratio = 1, expand = F, xlim = c(0, NA), ylim = c(0, NA)) + 
+  labs(x = "Design volume (mL)", y = "Part volume (mL)") +
+  theme_bw(base_size = 8)
+
+
+```
+
+
+## Comparison between washes -- reusability
+
+```{r}
+mass_reusability <- read_csv(make_path("/data/20230628-mass-reusability.csv"))
+
+aov_lm <- aov(mass ~ layer*date, data = mass_reusability) %>% summary()
+
+aov_lm
+
+mass_reusability <- mass_reusability %>% 
+  mutate(
+    state = case_when(
+      date == "27-Jun" ~ "wet",
+      TRUE ~ "dry"
+    ),
+    treatment = case_when(
+      date == "20-Jun" ~ "Starting",
+      date == "27-Jun" ~ "Washed",
+      date == "28-Jun" ~ "Dried"
+    ),
+    treatment = factor(treatment,
+                              levels = c("Starting","Washed","Dried"))
+  )
+
+mass_reusability %>% 
+    subset(state == "dry") %>% 
+    lm(mass ~ factor(date) * factor(layer), data = .) %>% 
+    summary()
+
+mass_reusability %>% 
+  ggplot() +
+  geom_point(aes(x = treatment, y = mass/1000)) +
+  geom_prismbars(aes(x = treatment, y = mass/1000)) +
+    labs(x = "Condition", y = "Mass (g)") +
+  theme_bw()
+```
+

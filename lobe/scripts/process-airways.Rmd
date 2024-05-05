@@ -1,0 +1,413 @@
+---
+title: "Airway Approximation Properties based on Yeh & Schum 1980 Morphometric Model"
+author: "irw"
+date: "Created 20230322 -- Last compiled `r format(Sys.Date())`"
+output:
+  pdf_document:
+    toc: yes
+    keep_tex: true
+  html_document:
+    df_print: paged
+    toc: yes
+    toc_float: yes
+editor_options:
+  chunk_output_type: console
+params:
+  verbose: yes
+legacy-changes:
+- "20230302 - Copied from 20230227"
+changes:
+- "20230322 - Copied from 20230302"
+---
+
+```{r, include=FALSE}
+if (params$verbose) {
+  knitr::opts_chunk$set(
+    echo = TRUE,
+    warning = TRUE,
+    message = FALSE
+  )
+} else {
+  knitr::opts_chunk$set(
+    echo = FALSE,
+    warning = FALSE,
+    message = FALSE
+  )
+}
+```
+
+```{r, echo=FALSE}
+if (knitr::is_latex_output()) {
+knitr::asis_output("\\newpage")
+}
+```
+
+```{r, child='notes.txt', eval=F}
+```
+
+```{r, echo=FALSE}
+if (knitr::is_latex_output()) {
+knitr::asis_output("\\newpage")
+}
+```
+
+```{r}
+# Setup chunk
+parent <- "lobe/scripts/"
+
+make_path <- function(local_path) {
+  path = here::here(paste0(parent, local_path))
+}
+
+append_date <- function(base_name) {
+  date = format(Sys.Date(), "%Y%m%d")
+  
+  split_name = strsplit(base_name, "\\.")
+  
+  return(paste0(split_name[[1]][1], "-", date, ".", split_name[[1]][2]))
+}
+```
+
+```{r}
+library(tidyverse)
+library(jsonlite)
+library(here)
+library(kableExtra)
+
+source(here::here("lobe/scripts/lattice_models_wp.R"))
+source(here::here("lobe/scripts/process_airways_ys.R"))
+```
+
+# Lattice properties
+
+The peripheral lattice is defined with cell length 2.3 mm and strut radius 0.2 mm.
+
+```{r}
+rstar_p = 0.2/2.3
+
+porosity_wp(rstar_p)
+
+ssa_dimensionless_wp(rstar_p)/2.3
+
+hydraulic_diameter_dimensionless_wp(rstar_p)
+hydraulic_diameter_dimensionless_wp(rstar_p) * 2.3
+```
+
+```{r}
+print_kable <- function(data, transpose = FALSE) {
+  
+  data %>% 
+    mutate_if(is.numeric, format, digits=4, nsmall = 0) %>%
+    (function(x) {
+      if (transpose) {
+        x <- x %>% t()
+      } 
+      return (x)
+    }) %>% 
+    kbl(align = "c") %>%
+    kable_paper(full_width = F) %>% 
+    kable_styling(latex_options = c("hold_position"))
+  
+}
+
+print_lobe_json <- function(lobe_json_data) {
+  
+  # Need a way to return these and process tag list or LaTeX
+  # lobe_json_data$lobeProperties %>% print_kable()
+  # 
+  # lobe_json_data$airwayProperties %>% print_kable()
+  # 
+  # lobe_json_data$latticeProperties %>% print_kable()
+  
+  lobe_json_data %>% toJSON(pretty=TRUE) %>% print()
+  
+}
+
+format_json_input <- function(x) {
+  list(
+    "Lobe" = x$lobeProperties$lobePosition %>% toupper(),
+    "Airway Volume (mL)" = (x$lobeProperties$lobeVolume - x$lobeProperties$alveolarVolume) * 1e-3,
+    "Alveolar Volume (mL)" = x$lobeProperties$alveolarVolume * 1e-3,
+    "Lobe Volume (mL)" = x$lobeProperties$lobeVolume * 1e-3,
+    "Terminal Bronchioles Start Generation" = x$lobeProperties$terminalBronchiolesStartGeneration,
+    "Extrusion Start Generation" = x$lobeProperties$terminalBronchiolesStartGeneration + x$lobeProperties$extrusionStartOffset,
+    "C Start Generation" = x$lobeProperties$approximationStartGeneration,
+    "C average hydraulic diameter" = x$latticeProperties$hydraulicDiameter[1],
+    "C cell length" = x$latticeProperties$cellDimension[1],
+    "C r*" = x$latticeProperties$dimensionlessRadius[1],
+    "P Start Generation" = x$lobeProperties$peripheralStartGeneration,
+    "P average hydraulic diameter" = x$latticeProperties$hydraulicDiameter[2],
+    "P cell length" = x$latticeProperties$cellDimension[2],
+    "P r*" = x$latticeProperties$dimensionlessRadius[2]
+  )
+  }
+
+
+```
+
+\clearpage
+\newpage
+## Tuning - Left lower
+```{r eval=F}
+read_csv(here::here("lobe/ref-data/ys/ys_ll.csv")) %>% 
+  process_airways_ys(lobe_position = "ll",
+                     terminal_bronchioles_start = 16,
+                     extrusion_offset = 2,
+                     peripheral_start = 10) %>% 
+  .$latticeProperties %>% print_kable(transpose = T)
+
+read_csv(here::here("lobe/ref-data/ys/ys_ll.csv")) %>% 
+  process_airways_ys(lobe_position = "ll",
+                     terminal_bronchioles_start = 16,
+                     extrusion_offset = 2,
+                     peripheral_start = 11) %>% 
+  .$latticeProperties %>% print_kable(transpose = T)
+
+read_csv(here::here("lobe/ref-data/ys/ys_ll.csv")) %>% 
+  process_airways_ys(lobe_position = "ll",
+                     terminal_bronchioles_start = 16,
+                     extrusion_offset = 2,
+                     peripheral_start = 12) %>% 
+  .$latticeProperties %>% print_kable(transpose = T)
+```
+
+\clearpage
+\newpage
+## Tuning - Left upper
+```{r eval=F}
+read_csv(here::here("lobe/ref-data/ys/ys_lu.csv")) %>% 
+  process_airways_ys(lobe_position = "lu",
+                     terminal_bronchioles_start = 15,
+                     extrusion_offset = 2,
+                     peripheral_start = 9) %>% 
+  .$latticeProperties %>% print_kable(transpose = T)
+
+read_csv(here::here("lobe/ref-data/ys/ys_lu.csv")) %>% 
+  process_airways_ys(lobe_position = "lu",
+                     terminal_bronchioles_start = 15,
+                     extrusion_offset = 2,
+                     peripheral_start = 10) %>% 
+  .$latticeProperties %>% print_kable(transpose = T)
+
+read_csv(here::here("lobe/ref-data/ys/ys_lu.csv")) %>% 
+  process_airways_ys(lobe_position = "lu",
+                     terminal_bronchioles_start = 15,
+                     extrusion_offset = 2,
+                     peripheral_start = 11) %>% 
+  .$latticeProperties %>% print_kable(transpose = T)
+```
+
+\clearpage
+\newpage
+## Tuning - Right lower
+```{r eval=F}
+read_csv(here::here("lobe/ref-data/ys/ys_rl.csv")) %>% 
+  process_airways_ys(lobe_position = "rl",
+                     terminal_bronchioles_start = 17,
+                     extrusion_offset = 2,
+                     peripheral_start = 11) %>% 
+  .$latticeProperties %>% print_kable(transpose = T)
+
+read_csv(here::here("lobe/ref-data/ys/ys_rl.csv")) %>% 
+  process_airways_ys(lobe_position = "rl",
+                     terminal_bronchioles_start = 17,
+                     extrusion_offset = 2,
+                     peripheral_start = 12) %>% 
+  .$latticeProperties %>% print_kable(transpose = T)
+
+read_csv(here::here("lobe/ref-data/ys/ys_rl.csv")) %>% 
+  process_airways_ys(lobe_position = "rl",
+                     terminal_bronchioles_start = 17,
+                     extrusion_offset = 2,
+                     peripheral_start = 13) %>% 
+  .$latticeProperties %>% print_kable(transpose = T)
+```
+
+\clearpage
+\newpage
+## Tuning - Right middle
+```{r eval=F}
+read_csv(here::here("lobe/ref-data/ys/ys_rm.csv")) %>% 
+  process_airways_ys(lobe_position = "rm",
+                     terminal_bronchioles_start = 15,
+                     extrusion_offset = 2,
+                     peripheral_start = 8) %>% 
+  .$latticeProperties %>% print_kable(transpose = T)
+
+read_csv(here::here("lobe/ref-data/ys/ys_rm.csv")) %>% 
+  process_airways_ys(lobe_position = "rm",
+                     terminal_bronchioles_start = 15,
+                     extrusion_offset = 2,
+                     peripheral_start = 9) %>% 
+  .$latticeProperties %>% print_kable(transpose = T)
+
+read_csv(here::here("lobe/ref-data/ys/ys_rm.csv")) %>% 
+  process_airways_ys(lobe_position = "rm",
+                     terminal_bronchioles_start = 15,
+                     extrusion_offset = 2,
+                     peripheral_start = 10) %>% 
+  .$latticeProperties %>% print_kable(transpose = T)
+```
+
+\clearpage
+\newpage
+## Tuning - Right upper
+```{r eval=F}
+read_csv(here::here("lobe/ref-data/ys/ys_ru.csv")) %>% 
+  process_airways_ys(lobe_position = "ru",
+                     terminal_bronchioles_start = 15,
+                     extrusion_offset = 2,
+                     peripheral_start = 8) %>% 
+  .$latticeProperties %>% print_kable(transpose = T)
+
+read_csv(here::here("lobe/ref-data/ys/ys_ru.csv")) %>% 
+  process_airways_ys(lobe_position = "ru",
+                     terminal_bronchioles_start = 15,
+                     extrusion_offset = 2,
+                     peripheral_start = 9) %>% 
+  .$latticeProperties %>% print_kable(transpose = T)
+
+read_csv(here::here("lobe/ref-data/ys/ys_ru.csv")) %>% 
+  process_airways_ys(lobe_position = "ru",
+                     terminal_bronchioles_start = 15,
+                     extrusion_offset = 2,
+                     peripheral_start = 10) %>% 
+  .$latticeProperties %>% print_kable(transpose = T)
+
+```
+
+\clearpage
+\newpage
+# Generate shell properties
+```{r, eval = T}
+# Supply a path via append_date() to save output
+# e.g. output_location = make_path(append_date("morphometric/ys_ll.txt"))
+
+ll <- read_csv(here::here("lobe/ref-data/ys/ys_ll.csv")) %>% 
+  process_airways_ys(lobe_position = "ll",
+                     terminal_bronchioles_start = 16,
+                     extrusion_offset = 2,
+                     peripheral_start = 11,
+                     )
+
+lu <- read_csv(here::here("lobe/ref-data/ys/ys_lu.csv")) %>% 
+  process_airways_ys(lobe_position = "lu",
+                     terminal_bronchioles_start = 15,
+                     extrusion_offset = 3,
+                     peripheral_start = 9,
+                     )
+
+rl <- read_csv(here::here("lobe/ref-data/ys/ys_rl.csv")) %>% 
+  process_airways_ys(lobe_position = "rl",
+                     terminal_bronchioles_start = 17,
+                     extrusion_offset = 2,
+                     peripheral_start = 12,
+                     )
+
+rm <- read_csv(here::here("lobe/ref-data/ys/ys_rm.csv")) %>% 
+  process_airways_ys(lobe_position = "rm",
+                     terminal_bronchioles_start = 15,
+                     extrusion_offset = 3,
+                     peripheral_start = 8,
+                     )
+
+ru <- read_csv(here::here("lobe/ref-data/ys/ys_ru.csv")) %>% 
+  process_airways_ys(lobe_position = "ru",
+                     terminal_bronchioles_start = 15,
+                     extrusion_offset = 3,
+                     peripheral_start = 9,
+                     )
+
+```
+
+\clearpage
+\newpage
+# Print properties
+
+## Left lower
+```{r}
+ll$lobeProperties %>% print_kable(transpose = T)
+ll$airwayProperties %>% print_kable()
+ll$latticeProperties %>% print_kable(transpose = T)
+
+ll_table <- ll %>% format_json_input()
+```
+
+\clearpage
+\newpage
+
+## Left upper
+```{r}
+lu$lobeProperties %>% print_kable(transpose = T)
+lu$airwayProperties %>% print_kable()
+lu$latticeProperties %>% print_kable(transpose = T)
+
+lu_table <- lu %>% format_json_input()
+```
+
+\clearpage
+\newpage
+
+## Right lower
+```{r}
+rl$lobeProperties %>% print_kable(transpose = T)
+rl$airwayProperties %>% print_kable()
+rl$latticeProperties %>% print_kable(transpose = T)
+
+rl_table <- rl %>% format_json_input()
+```
+
+\clearpage
+\newpage
+
+## Right middle
+```{r}
+rm$lobeProperties %>% print_kable(transpose = T)
+rm$airwayProperties %>% print_kable()
+rm$latticeProperties %>% print_kable(transpose = T)
+
+rm_table <- rm %>% format_json_input()
+```
+
+\clearpage
+\newpage
+
+## Right upper
+```{r}
+ru$lobeProperties %>% print_kable(transpose = T)
+ru$airwayProperties %>% print_kable()
+ru$latticeProperties %>% print_kable(transpose = T)
+
+ru_table <- ru %>% format_json_input()
+```
+
+\clearpage
+\newpage
+
+## Formatted summary
+
+```{r}
+
+lobe_data <- bind_rows(ru_table, rm_table, rl_table, lu_table, ll_table) 
+
+lobe_data %>% 
+mutate_if(is.double, format, digits=2, nsmall = 2, scientific = F) %>%
+mutate(
+  across(contains("Start Generation"), as.integer)
+) %>% 
+  t() %>% 
+  kbl(booktabs = T) %>%
+  column_spec(1, bold = T) %>% 
+kable_styling(font_size = 9, full_width = T) %>% 
+pack_rows("Central", 7, 10) %>%
+pack_rows("Peripheral", 11, 14)
+
+
+```
+
+
+# `process_airways_ys.R`
+```{embed}
+"process_airways_ys.R"
+```
+

@@ -1,0 +1,585 @@
+---
+title: "Figure 3 - Breathing Summary"
+author: "irw"
+date: "Created 20240131 -- Last compiled `r format(Sys.Date())`"
+always_allow_html: false
+output:
+  html_document:
+    df_print: paged
+    toc: yes
+    toc_float: yes
+  pdf_document:
+    toc: yes
+    toc_depth: 3
+    keep_tex: true
+params:
+  verbose: FALSE
+changes:
+- "20240131 - Created. Adapted from report template, breathing files. Includes updates to make_path function from after July 2023."
+editor_options: 
+  chunk_output_type: inline
+---
+
+```{r, include=FALSE}
+if (params$verbose) {
+  knitr::opts_chunk$set(
+    echo = TRUE,
+    warning = TRUE,
+    message = FALSE
+  )
+} else {
+  knitr::opts_chunk$set(
+    echo = FALSE,
+    warning = FALSE,
+    message = FALSE
+  )
+}
+
+knitr::opts_chunk$set(fig.width=6, fig.height=3, 
+                      dpi=500, fig.align = 'center',
+                      fig.retina = 1)
+```
+
+```{r, echo=FALSE}
+if (knitr::is_latex_output()) {
+knitr::asis_output("\\newpage")
+}
+```
+
+```{r}
+# Setup chunk
+
+make_path <- function(local_path, parent_dir = parent) {
+  path = here::here(paste0(parent_dir, "/", local_path))
+}
+# Overwritten by breathing_analysis function
+
+# Load libraries
+library(tidyverse)
+library(here)
+library(jsonlite)
+library(kableExtra)
+library(plotly)
+library(glue)
+library(pracma)
+
+source(here::here("resources/plot/print_ggplot.R"))
+source(here::here("resources/plot/plot_interactive.R"))
+source(here::here("resources/reports/table_functions.R"))
+source(here::here("resources/plot/geom_prismbars.R"))
+
+source(here::here("breathing/scripts/breathing_analysis.R"))
+source(here::here("breathing/scripts/breaths_table.R"))
+```
+
+```{r, include = F}
+knitr::asis_output("# Session Info")
+sessionInfo()
+```
+
+# Full lung
+
+## Set 1
+
+d2100
+s250
+full lung starting from home position - equivalent to single lobe studies setup
+
+```{r, include=params$verbose}
+parent <- "breathing/20230626-27-breathing/data/full/"
+data_folder = "d2100-s250-home/data"
+name = strsplit(data_folder, "/")[[1]][1]
+
+read_flow_folder(data_folder, 10, name)
+# See previous analysis for plotting
+
+min = 5500
+max = 9060
+
+```
+
+
+```{r, include=params$verbose}
+tibble(
+    peak = rep(seq_len(7), each=2),
+    maneuver = rep(c("i","e"), times = 7)
+) %>% 
+    make_peaks_index_r(name = name)
+
+peak_indices <- get_data(name) %>% 
+  slice(min:max) %>%
+  mutate(data = max(`0`) - `0`) %>% 
+  .$data %>% 
+  pracma::findpeaks(., 
+                    minpeakheight = 1,
+                    threshold = 1, 
+                    minpeakdistance = 50) %>% 
+  .[,2] %>% 
+  sort()+min-1
+
+peak_indices %>% print()
+
+# Manually add peaks if there's an issue
+# peak_indices <- c(peak_indices, NA) %>% sort()
+
+get_peaks(name) %>% 
+  mutate(
+    start = c(min, peak_indices),
+    end = c(peak_indices, max)
+  ) %>% 
+  make_peaks_index_r(name) # Vestigial function
+
+
+get_peaks(name) %>% 
+  pmap_dfr(get_breath_data) %>% 
+  make_breaths(name, .)
+
+
+```
+
+```{r, results='asis'}
+get_breaths(name) %>% 
+  print_breath_summary(formatted_only = !params$verbose)
+```
+
+```{r, echo=FALSE}
+if (knitr::is_latex_output()) {
+knitr::asis_output("\\newpage")
+}
+```
+
+## Set 2
+
+d500
+s250
+full lung starting from home position - equivalent to single lobe studies setup
+
+```{r, include=params$verbose}
+parent <- "breathing/20230626-27-breathing/data/full/"
+data_folder = "d500-s250-home/data"
+name = strsplit(data_folder, "/")[[1]][1]
+
+read_flow_folder(data_folder, 10, name)
+
+min = 3900
+max = 5000
+
+```
+
+
+```{r, include=params$verbose}
+tibble(
+    peak = rep(seq_len(7), each=2),
+    maneuver = rep(c("i","e"), times = 7)
+) %>% 
+    make_peaks_index_r(name = name)
+
+peak_indices <- get_data(name) %>% 
+  slice(min:max) %>%
+  mutate(data = max(`0`) - `0`) %>% 
+  .$data %>% 
+  pracma::findpeaks(., 
+                    minpeakheight = 1,
+                    threshold = 10, 
+                    minpeakdistance = 30) %>% 
+  .[,2] %>% 
+  sort()+min-1
+
+peak_indices %>% print()
+
+# Manually add peaks if there's an issue
+# peak_indices <- c(peak_indices, NA) %>% sort()
+
+get_peaks(name) %>% 
+  mutate(
+    start = c(min, peak_indices),
+    end = c(peak_indices, max)
+  ) %>% 
+  make_peaks_index_r(name)
+
+
+get_peaks(name) %>% pmap_dfr(get_breath_data) %>% make_breaths(name, .)
+
+
+```
+
+```{r, results='asis'}
+get_breaths(name) %>% 
+  print_breath_summary(formatted_only = !params$verbose)
+```
+
+```{r, echo=FALSE}
+if (knitr::is_latex_output()) {
+knitr::asis_output("\\newpage")
+}
+```
+
+## Set 3
+
+d2100
+s450
+full lung starting from full exhale
+
+```{r, include=params$verbose}
+parent <- "breathing/20230626-27-breathing/data/full/"
+data_folder = "d2100-s450-full-exhale/data"
+name = strsplit(data_folder, "/")[[1]][1]
+
+read_flow_folder(data_folder, 10, name)
+
+min = 5700
+max = 11500
+
+```
+
+
+```{r, include=params$verbose}
+tibble(
+    peak = rep(seq_len(7), each=2),
+    maneuver = rep(c("i","e"), times = 7)
+) %>% 
+    make_peaks_index_r(name = name)
+
+peak_indices <- get_data(name) %>% 
+  slice(min:max) %>%
+  mutate(data = max(`0`) - `0`) %>% 
+  .$data %>% 
+  pracma::findpeaks(., 
+                    minpeakheight = 1,
+                    threshold = 10, 
+                    minpeakdistance = 50) %>% 
+  .[,2] %>% 
+  sort()+min-1
+
+peak_indices %>% print()
+
+# Manually add peaks if there's an issue
+peak_indices <- c(peak_indices, 6208, 7018, 7813, 8587, 9383, 10178, 10976) %>% sort()
+
+get_peaks(name) %>% 
+  mutate(
+    start = c(min, peak_indices),
+    end = c(peak_indices, max)
+  ) %>% 
+  make_peaks_index_r(name)
+
+
+get_peaks(name) %>% pmap_dfr(get_breath_data) %>% make_breaths(name, .)
+
+
+```
+
+```{r, results='asis'}
+get_breaths(name) %>% 
+  print_breath_summary(formatted_only = !params$verbose)
+```
+
+```{r, echo=FALSE}
+if (knitr::is_latex_output()) {
+knitr::asis_output("\\newpage")
+}
+```
+
+## Set 4
+
+d500
+s450
+full lung starting from full exhale
+
+```{r, include=params$verbose}
+parent <- "breathing/20230626-27-breathing/data/full/"
+data_folder = "d500-s450-full-exhale/data"
+name = strsplit(data_folder, "/")[[1]][1]
+
+read_flow_folder(data_folder, 10, name)
+
+min = 3800
+max = 5600
+
+
+```
+
+
+```{r, include=params$verbose}
+tibble(
+    peak = rep(seq_len(7), each=2),
+    maneuver = rep(c("i","e"), times = 7)
+) %>% 
+    make_peaks_index_r(name = name)
+
+peak_indices <- get_data(name) %>% 
+  slice(min:max) %>%
+  mutate(data = max(`0`) - `0`) %>% 
+  .$data %>% 
+  pracma::findpeaks(., 
+                    minpeakheight = 1,
+                    threshold = 10, 
+                    minpeakdistance = 50) %>% 
+  .[,2] %>% 
+  sort()+min-1
+
+peak_indices %>% print()
+
+# Manually add peaks if there's an issue
+peak_indices <- c(peak_indices, 4481, 4703, 4926, 5149, 5372) %>% sort()
+
+get_peaks(name) %>% 
+  mutate(
+    start = c(min, peak_indices),
+    end = c(peak_indices, max)
+  ) %>% 
+  make_peaks_index_r(name)
+
+
+get_peaks(name) %>% pmap_dfr(get_breath_data) %>% make_breaths(name, .)
+
+
+```
+
+```{r, results='asis'}
+get_breaths(name) %>% 
+  print_breath_summary(formatted_only = !params$verbose)
+```
+
+```{r, echo=FALSE}
+if (knitr::is_latex_output()) {
+knitr::asis_output("\\newpage")
+}
+```
+
+# Summary 
+
+## Summary data
+
+```{r}
+# Combine
+full_lung_breaths <- bind_rows(
+  `breaths_d500-s250-home` %>% 
+    trim_end_breaths(),
+  `breaths_d500-s450-full-exhale` %>% 
+    trim_end_breaths(),
+  `breaths_d2100-s250-home` %>% 
+    trim_end_breaths(),
+  `breaths_d2100-s450-full-exhale` %>% 
+    trim_end_breaths()
+) %>% 
+  mutate(
+    maneuver = factor(maneuver, levels = c("i", "e"))
+  )
+```
+
+```{r, results = 'asis'}
+full_lung_breaths %>% 
+  print_breath_summary(formatted_only = !params$verbose, trim = F)
+```
+
+
+# Plots
+
+## Original time series
+
+```{r}
+format_full_lung <- function(plot) {
+  plot +
+    coord_cartesian(
+      xlim = c(0, 0.7), 
+      ylim = c(-50, 50),
+      expand = F) +
+    theme_bw(base_size = 8) +
+    theme(legend.position = "none")
+}
+
+full_fast_shallow <- 
+  `breaths_d500-s250-home` %>% 
+  trim_end_breaths() %>% 
+  plot_flow_time() %>% 
+  format_full_lung()
+
+full_fast_deep <- 
+  `breaths_d500-s450-full-exhale` %>% 
+  trim_end_breaths() %>% 
+  plot_flow_time() %>% 
+  format_full_lung()
+
+full_moderate_shallow <- 
+  `breaths_d2100-s250-home` %>% 
+  trim_end_breaths() %>% 
+  plot_flow_time() %>% 
+  format_full_lung()
+
+full_moderate_deep <- 
+  `breaths_d2100-s450-full-exhale` %>%
+  trim_end_breaths() %>% 
+  plot_flow_time() %>% 
+  format_full_lung()
+```
+
+```{r, fig.width = 174/3/25.4, fig.height = 40/25.4,}
+knitr::opts_chunk$set(fig.width = 174/3/25.4, fig.height = 40/25.4)
+
+full_fast_shallow
+
+full_fast_deep
+
+full_moderate_shallow
+
+full_moderate_deep
+
+```
+
+```{r, fig.width=174/3*2/25.4, fig.height=80/25.4}
+knitr::opts_chunk$set(fig.width = 174/3*2/25.4, fig.height = 40*2/25.4, dpi = 500)
+
+# Legacy
+# panel <- gridExtra::grid.arrange(
+#   full_fast_shallow, full_fast_deep,
+#        full_moderate_shallow, full_moderate_deep,
+#   layout_matrix = rbind(
+#     c(1, 2),
+#     c(3, 4)
+#     )
+# )
+
+# linewidth = 0.3
+# print(ffs)
+# ffs
+# ffs$plot$layers[[1]]$aes_params$linewidth = 4
+
+# Cowplot maintains compatibility with modified print.ggplot
+library(cowplot)
+
+plot_grid(full_fast_shallow, full_fast_deep,
+       full_moderate_shallow, full_moderate_deep,
+       nrow = 2)
+
+```
+
+## Volume summary
+
+```{r, fig.width = 174/3/25.4, fig.height = 40/25.4}
+knitr::opts_chunk$set(fig.width = 174/3/25.4, fig.height = 40/25.4, dpi = 500)
+
+point_size = 2
+bar_width = 0.4
+linewidth = 0.2
+
+full_lung_breaths %>% 
+   group_by(name, maneuver) %>% 
+   dplyr::summarise(sd = sd(volume), # Define before renaming volume
+                    volume_data = list(volume),
+                    volume = mean(volume)
+                    ) %>% 
+  subset(maneuver %in% c("i")) %>% 
+  ggplot(aes(x = name, fill = maneuver)) + 
+  geom_bar(aes(y = volume), color = "black", 
+           stat = "identity",
+           position = position_dodge(width=0.9),
+           linewidth = linewidth) +
+  geom_errorbar(aes(ymin = volume-sd, ymax=volume+sd), 
+                position = position_dodge(width=0.9),
+                width = 0.2) +
+  scale_y_continuous(expand = expansion(mult = c(0, .1))) +
+  scale_x_discrete(labels = c(
+    "d500-s250-home" = "A",
+    "d500-s450-full-exhale" = "B",
+    "d2100-s250-home" = "C",
+    "d2100-s450-full-exhale" = "D"
+  ),
+  limits = c("d500-s250-home",
+             "d500-s450-full-exhale",
+             "d2100-s250-home",
+             "d2100-s450-full-exhale")) +
+  scale_fill_manual(
+    values = c(RColorBrewer::brewer.pal(3, "Set1")[1:2]),
+    breaks = c("e", "i"), labels = c("Exhale", "Inhale"),
+                             guide = guide_legend(title = "Maneuver",
+                                                  override.aes = list(size = 5))) +
+  labs(x = "Profile", y = "Volume (L)") +
+  theme_bw(base_size = 8) +
+  theme(legend.position = "none")
+```
+
+
+## Flow rate summary
+
+```{r, fig.width = 174/3/25.4, fig.height = 40/25.4}
+knitr::opts_chunk$set(fig.width = 174/3/25.4, fig.height = 40/25.4, dpi = 500)
+
+point_size = 2
+bar_width = 0.4
+linewidth = 0.2
+
+flow_rate_summary <- full_lung_breaths %>% 
+   group_by(name, maneuver) %>% 
+   dplyr::summarise(sd_qmax = sd(max_q),
+                    qmax_data = list(max_q),
+                    qmax = mean(max_q),
+                    sd_qavg = sd(avg_q),
+                    qavg_data = list(avg_q),
+                    qavg = mean(avg_q)
+                    ) %>% 
+  subset(maneuver == "i") %>% 
+  ggplot(aes(x = name)) + 
+  geom_errorbar(aes(ymin = qmax-sd_qmax, ymax=qmax+sd_qmax), 
+                position = position_dodge(width=0.3),
+                width = bar_width
+           ) +
+  geom_errorbar(aes(ymin = qavg-sd_qavg, ymax=qavg+sd_qavg), 
+                position = position_dodge(width=0.3),
+                width = bar_width
+           ) +
+  geom_point(aes(y = qmax, shape = "triangle", color = maneuver), 
+           position = position_dodge(width=0.3),
+           size = point_size
+           ) +
+  geom_point(aes(y = qavg, shape = "circle", color = maneuver), 
+           position = position_dodge(width=0.3),
+           size = point_size
+           ) +
+    geom_point(aes(y = qmax), 
+           position = position_dodge(width=0.3),
+           size = point_size,
+           shape = 24,
+           linewidth = linewidth) +
+  geom_point(aes(y = qavg), 
+           position = position_dodge(width=0.3),
+           size = point_size,
+           shape = 21,
+           linewidth = linewidth) +
+  coord_cartesian(ylim = c(0, NA)) +
+  scale_y_continuous(expand = expansion(mult = c(0, .1))) +
+  scale_x_discrete(labels = c(
+    "d500-s250-home" = "A",
+    "d500-s450-full-exhale" = "B",
+    "d2100-s250-home" = "C",
+    "d2100-s450-full-exhale" = "D"
+  ),
+  limits = c("d500-s250-home",
+             "d500-s450-full-exhale",
+             "d2100-s250-home",
+             "d2100-s450-full-exhale")) +
+  scale_color_manual(
+    values = c(RColorBrewer::brewer.pal(3, "Set1")[1:2]),
+    breaks = c("e", "i"), labels = c("Exhale", "Inhale")) +
+  scale_shape_discrete(
+    breaks = c("circle", "triangle"),
+    labels = c("circle" = "Average", "triangle" = "Peak")
+  ) +
+  guides(
+    color = "none",
+    shape = guide_legend(
+      title = "",
+      label.theme = element_text(size = 6)
+    )
+  ) +
+  labs(x = "Profile", y = "Flow rate (SLPM)") +
+  theme_bw(base_size = 8) +
+  theme(legend.position = "bottom")
+
+
+flow_rate_summary
+
+flow_rate_summary + 
+  theme(legend.position = "none")
+```
+

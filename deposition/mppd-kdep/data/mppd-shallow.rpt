@@ -1,0 +1,336 @@
+MPPD v3.04 © 2016 by Applied Research Associates, Inc.
+--> Lung morphometry  <--
+Lung Geometry: humanlimited
+Number of segments: 110
+Scaling tree by (TLC ---> FRC): 0.850
+TLC = 5358.07  ml
+FRC = 3287.80  ml
+Scaling tree by ((1+TV/2FRC)^1/3): 1.030
+Calculated FRC  =       3287.80  ml
+Lung (distal) volume = 3587.80 ml
+Volume of conducting airways: 160.40 ml
+ 
+-----> Breathing Parameters and Times <-------
+Breathing Frequency: 12.0 #/min     Tidal volume: 600.0 ml
+Nasopharyngeal dead space: 50.0 ml
+--> Regional Deposition <--
+  
+Inhalation time: 2.50 sec    Exhalation time: 2.50 sec
+Volumetric inhalation flow rate at trachea: 240.0 ml/sec
+Volumetric exhalation flow rate at trachea: 240.0 ml/sec
+Time spent in the head during inhalation: 0.208 sec
+Time spent in the head during exhalation: 0.208 sec
+    
+-->  Particle properties  <--
+Diameter: 6.770E+0 µm
+Sigma_g (GSD): 2.220E+0
+Mass density: 1.0 g/cm^3
+
+Aerosol concentration: 47.8 mg/m^3
+    
+Inhalable fraction: 1.0000
+Breathing route: oral
+   
+-->  Inhalation  <--
+Inspiratory Fraction: 0.5
+    
+-->  Pause  <--
+Pause Fraction: 0.0
+    
+
+Total head deposition fraction: 0.3710
+Total TB deposition fraction: 0.1697
+Total pulmonary deposition fraction: 0.1757
+Total deposition fraction: 0.7163
+    
+Head deposited mass rate: 1.277E+2 µg/min
+TB deposited mass rate: 5.839E+1 µg/min
+Pulmonary deposited mass rate: 6.047E+1 µg/min
+Total deposited mass rate: 2.465E+2 µg/min
+ 
+Head deposited mass rate per unit area: 8.246E-1 µg/min/cm^2
+TB deposited mass rate per unit area: 9.224E-3 µg/min/cm^2
+Pulmonary deposited mass rate per unit area: 4.166E-5 µg/min/cm^2
+Total deposited mass rate per unit area: 1.691E-4 µg/min/cm^2
+
+Lobe: Entire Lung
+Number of segments: 110
+Number of terminal airways (alveolar regions): 26624
+Lobe volume: 3587.80 ml
+Volume of conducting airways: 160.40 ml
+Total deposition fraction in conducting airways: 0.1697
+Total deposition fraction in conducting airways during inhalation: 0.0344
+Total deposition fraction in conducting airways during pause: 0.0000
+Total deposition fraction in conducting airways during exhalation: 0.0140
+Total deposition fraction in alveolar region: 0.1757
+Total deposition fraction in alveolar region during inhalation: 0.0433
+Total deposition fraction in alveolar region during pause: 0.0000
+Total deposition fraction in alveolar region during exhalation: 0.0390
+
+*************Dosimetrics**************
+Mass Deposition per Alveolus (mg): 1.037E-8
+Mass Deposition per Macrophage (mg): 8.569E-10
+Number of Particles per Alveolus: 1.954E-2
+Number of Particles per Macrophage: 1.615E-3
+Airway deposition fraction (TB + Alv): 0.3454
+  
+Deposition per generation in Entire Lung
+Gen. Num.	Dep. Frac.	Surf. Area	TB S.A. 	Pul S.A.	Dep. Frac./Area (cm²)
+   1		 2.054E-5	 4.560E+1	 4.560E+1	 0.000E+0	 4.505E-7
+   2		 6.454E-3	 2.989E+1	 2.989E+1	 0.000E+0	 2.159E-4
+   3		 4.839E-3	 1.903E+1	 1.903E+1	 0.000E+0	 2.543E-4
+   4		 5.847E-3	 1.804E+1	 1.804E+1	 0.000E+0	 3.242E-4
+   5		 7.811E-3	 2.811E+1	 2.811E+1	 0.000E+0	 2.778E-4
+   6		 9.211E-3	 4.840E+1	 4.840E+1	 0.000E+0	 1.903E-4
+   7		 8.189E-3	 6.621E+1	 6.621E+1	 0.000E+0	 1.237E-4
+   8		 7.938E-3	 9.178E+1	 9.178E+1	 0.000E+0	 8.649E-5
+   9		 9.642E-3	 1.398E+2	 1.398E+2	 0.000E+0	 6.896E-5
+   10		 1.204E-2	 1.989E+2	 1.989E+2	 0.000E+0	 6.051E-5
+   11		 1.511E-2	 2.878E+2	 2.878E+2	 0.000E+0	 5.250E-5
+   12		 1.580E-2	 3.440E+2	 3.440E+2	 0.000E+0	 4.592E-5
+   13		 1.653E-2	 3.930E+2	 3.930E+2	 0.000E+0	 4.205E-5
+   14		 1.682E-2	 4.334E+2	 4.334E+2	 0.000E+0	 3.880E-5
+   15		 1.714E-2	 5.057E+2	 5.057E+2	 0.000E+0	 3.389E-5
+   16		 1.911E-2	 7.149E+2	 3.720E+2	 7.579E+2	 2.674E-5
+   17		 2.242E-2	 1.041E+3	 1.938E+2	 2.484E+3	 2.153E-5
+   18		 2.640E-2	 1.615E+3	 0.000E+0	 6.933E+3	 1.634E-5
+   19		 3.140E-2	 2.634E+3	 0.000E+0	 1.967E+4	 1.192E-5
+   20		 3.499E-2	 4.364E+3	 0.000E+0	 3.882E+4	 8.019E-6
+   21		 3.216E-2	 7.536E+3	 0.000E+0	 7.151E+4	 4.268E-6
+   22		 1.827E-2	 1.299E+4	 0.000E+0	 1.214E+5	 1.406E-6
+   23		 7.047E-3	 2.315E+4	 0.000E+0	 2.135E+5	 3.044E-7
+   24		 1.927E-4	 1.691E+4	 0.000E+0	 1.526E+5	 1.140E-8
+   25		 0.000E+0	 1.084E+4	 0.000E+0	 9.806E+4	 0.000E+0
+  
+Lobe: LU
+Number of segments: 20
+Number of terminal airways (alveolar regions): 4096
+Lobe volume: 554.46 ml
+Volume of conducting airways: 19.98 ml
+Total deposition fraction in conducting airways: 0.0248
+Total deposition fraction in conducting airways during inhalation: 0.0041
+Total deposition fraction in conducting airways during pause: 0.0000
+Total deposition fraction in conducting airways during exhalation: 0.0023
+Total deposition fraction in alveolar region: 0.0260
+Total deposition fraction in alveolar region during inhalation: 0.0065
+Total deposition fraction in alveolar region during pause: 0.0000
+Total deposition fraction in alveolar region during exhalation: 0.0059
+
+*************Dosimetrics**************
+Mass Deposition per Alveolus (mg): 9.991E-9
+Mass Deposition per Macrophage (mg): 8.257E-10
+Number of Particles per Alveolus: 1.883E-2
+Number of Particles per Macrophage: 1.556E-3
+Airway deposition fraction (TB + Alv): 0.0508
+  
+Deposition per generation in LU
+Gen. Num.	Dep. Frac.	Surf. Area	TB S.A. 	Pul S.A.	Dep. Frac./Area (cm²)
+   4		 6.553E-4	 4.092E+0	 4.092E+0	 0.000E+0	 1.602E-4
+   5		 6.760E-4	 5.924E+0	 5.924E+0	 0.000E+0	 1.141E-4
+   6		 8.450E-4	 1.058E+1	 1.058E+1	 0.000E+0	 7.984E-5
+   7		 1.381E-3	 1.577E+1	 1.577E+1	 0.000E+0	 8.757E-5
+   8		 1.295E-3	 1.859E+1	 1.859E+1	 0.000E+0	 6.966E-5
+   9		 2.353E-3	 3.708E+1	 3.708E+1	 0.000E+0	 6.344E-5
+   10		 2.303E-3	 3.771E+1	 3.771E+1	 0.000E+0	 6.107E-5
+   11		 2.415E-3	 4.983E+1	 4.983E+1	 0.000E+0	 4.846E-5
+   12		 2.572E-3	 6.084E+1	 6.084E+1	 0.000E+0	 4.228E-5
+   13		 3.491E-3	 7.968E+1	 7.968E+1	 0.000E+0	 4.381E-5
+   14		 3.405E-3	 9.676E+1	 9.676E+1	 0.000E+0	 3.520E-5
+   15		 3.395E-3	 1.219E+2	 1.219E+2	 0.000E+0	 2.786E-5
+   16		 3.825E-3	 1.789E+2	 0.000E+0	 3.928E+2	 2.138E-5
+   17		 4.330E-3	 2.730E+2	 0.000E+0	 9.026E+2	 1.586E-5
+   18		 4.877E-3	 4.210E+2	 0.000E+0	 2.253E+3	 1.158E-5
+   19		 5.524E-3	 6.848E+2	 0.000E+0	 6.506E+3	 8.067E-6
+   20		 5.037E-3	 1.097E+3	 0.000E+0	 1.004E+4	 4.591E-6
+   21		 2.454E-3	 1.858E+3	 0.000E+0	 1.664E+4	 1.321E-6
+   22		 0.000E+0	 3.140E+3	 0.000E+0	 2.817E+4	 0.000E+0
+   23		 0.000E+0	 5.421E+3	 0.000E+0	 4.763E+4	 0.000E+0
+  
+Lobe: LL
+Number of segments: 21
+Number of terminal airways (alveolar regions): 8192
+Lobe volume: 1100.88 ml
+Volume of conducting airways: 41.66 ml
+Total deposition fraction in conducting airways: 0.0519
+Total deposition fraction in conducting airways during inhalation: 0.0094
+Total deposition fraction in conducting airways during pause: 0.0000
+Total deposition fraction in conducting airways during exhalation: 0.0044
+Total deposition fraction in alveolar region: 0.0502
+Total deposition fraction in alveolar region during inhalation: 0.0126
+Total deposition fraction in alveolar region during pause: 0.0000
+Total deposition fraction in alveolar region during exhalation: 0.0113
+
+*************Dosimetrics**************
+Mass Deposition per Alveolus (mg): 9.636E-9
+Mass Deposition per Macrophage (mg): 7.964E-10
+Number of Particles per Alveolus: 1.816E-2
+Number of Particles per Macrophage: 1.501E-3
+Airway deposition fraction (TB + Alv): 0.1021
+  
+Deposition per generation in LL
+Gen. Num.	Dep. Frac.	Surf. Area	TB S.A. 	Pul S.A.	Dep. Frac./Area (cm²)
+   4		 3.584E-3	 5.461E+0	 5.461E+0	 0.000E+0	 6.563E-4
+   5		 2.034E-3	 6.973E+0	 6.973E+0	 0.000E+0	 2.917E-4
+   6		 2.548E-3	 9.029E+0	 9.029E+0	 0.000E+0	 2.823E-4
+   7		 2.048E-3	 1.681E+1	 1.681E+1	 0.000E+0	 1.218E-4
+   8		 2.162E-3	 2.215E+1	 2.215E+1	 0.000E+0	 9.760E-5
+   9		 2.610E-3	 3.569E+1	 3.569E+1	 0.000E+0	 7.311E-5
+   10		 3.724E-3	 6.672E+1	 6.672E+1	 0.000E+0	 5.583E-5
+   11		 5.616E-3	 1.015E+2	 1.015E+2	 0.000E+0	 5.534E-5
+   12		 5.969E-3	 1.333E+2	 1.333E+2	 0.000E+0	 4.477E-5
+   13		 5.665E-3	 1.462E+2	 1.462E+2	 0.000E+0	 3.875E-5
+   14		 5.378E-3	 1.431E+2	 1.431E+2	 0.000E+0	 3.758E-5
+   15		 4.991E-3	 1.582E+2	 1.582E+2	 0.000E+0	 3.155E-5
+   16		 5.572E-3	 2.131E+2	 2.131E+2	 0.000E+0	 2.614E-5
+   17		 6.485E-3	 3.107E+2	 0.000E+0	 6.896E+2	 2.087E-5
+   18		 7.589E-3	 4.701E+2	 0.000E+0	 1.571E+3	 1.614E-5
+   19		 9.095E-3	 7.503E+2	 0.000E+0	 4.141E+3	 1.212E-5
+   20		 1.051E-2	 1.216E+3	 0.000E+0	 1.175E+4	 8.641E-6
+   21		 1.067E-2	 2.079E+3	 0.000E+0	 1.970E+4	 5.135E-6
+   22		 5.885E-3	 3.532E+3	 0.000E+0	 3.284E+4	 1.666E-6
+   23		 8.735E-6	 6.175E+3	 0.000E+0	 5.624E+4	 1.415E-9
+   24		 0.000E+0	 1.084E+4	 0.000E+0	 9.666E+4	 0.000E+0
+  
+Lobe: RU
+Number of segments: 20
+Number of terminal airways (alveolar regions): 4096
+Lobe volume: 537.07 ml
+Volume of conducting airways: 16.50 ml
+Total deposition fraction in conducting airways: 0.0224
+Total deposition fraction in conducting airways during inhalation: 0.0040
+Total deposition fraction in conducting airways during pause: 0.0000
+Total deposition fraction in conducting airways during exhalation: 0.0020
+Total deposition fraction in alveolar region: 0.0295
+Total deposition fraction in alveolar region during inhalation: 0.0074
+Total deposition fraction in alveolar region during pause: 0.0000
+Total deposition fraction in alveolar region during exhalation: 0.0066
+
+*************Dosimetrics**************
+Mass Deposition per Alveolus (mg): 1.131E-8
+Mass Deposition per Macrophage (mg): 9.343E-10
+Number of Particles per Alveolus: 2.131E-2
+Number of Particles per Macrophage: 1.761E-3
+Airway deposition fraction (TB + Alv): 0.0519
+  
+Deposition per generation in RU
+Gen. Num.	Dep. Frac.	Surf. Area	TB S.A. 	Pul S.A.	Dep. Frac./Area (cm²)
+   4		 7.550E-4	 2.759E+0	 2.759E+0	 0.000E+0	 2.737E-4
+   5		 1.288E-3	 7.491E+0	 7.491E+0	 0.000E+0	 1.719E-4
+   6		 1.396E-3	 1.313E+1	 1.313E+1	 0.000E+0	 1.063E-4
+   7		 1.409E-3	 1.363E+1	 1.363E+1	 0.000E+0	 1.034E-4
+   8		 1.984E-3	 2.546E+1	 2.546E+1	 0.000E+0	 7.790E-5
+   9		 2.235E-3	 3.221E+1	 3.221E+1	 0.000E+0	 6.939E-5
+   10		 1.987E-3	 3.494E+1	 3.494E+1	 0.000E+0	 5.689E-5
+   11		 1.813E-3	 3.680E+1	 3.680E+1	 0.000E+0	 4.927E-5
+   12		 2.091E-3	 4.797E+1	 4.797E+1	 0.000E+0	 4.359E-5
+   13		 2.370E-3	 5.111E+1	 5.111E+1	 0.000E+0	 4.638E-5
+   14		 2.513E-3	 6.309E+1	 6.309E+1	 0.000E+0	 3.983E-5
+   15		 2.579E-3	 7.707E+1	 7.707E+1	 0.000E+0	 3.346E-5
+   16		 3.176E-3	 1.172E+2	 0.000E+0	 2.630E+2	 2.710E-5
+   17		 3.904E-3	 1.858E+2	 0.000E+0	 6.327E+2	 2.102E-5
+   18		 4.825E-3	 3.109E+2	 0.000E+0	 1.745E+3	 1.552E-5
+   19		 5.725E-3	 5.218E+2	 0.000E+0	 5.133E+3	 1.097E-5
+   20		 6.389E-3	 9.158E+2	 0.000E+0	 8.831E+3	 6.976E-6
+   21		 4.919E-3	 1.648E+3	 0.000E+0	 1.591E+4	 2.984E-6
+   22		 5.352E-4	 2.915E+3	 0.000E+0	 2.751E+4	 1.836E-7
+   23		 0.000E+0	 5.421E+3	 0.000E+0	 5.112E+4	 0.000E+0
+  
+Lobe: RM
+Number of segments: 19
+Number of terminal airways (alveolar regions): 2048
+Lobe volume: 264.50 ml
+Volume of conducting airways: 6.64 ml
+Total deposition fraction in conducting airways: 0.0092
+Total deposition fraction in conducting airways during inhalation: 0.0018
+Total deposition fraction in conducting airways during pause: 0.0000
+Total deposition fraction in conducting airways during exhalation: 0.0009
+Total deposition fraction in alveolar region: 0.0162
+Total deposition fraction in alveolar region during inhalation: 0.0040
+Total deposition fraction in alveolar region during pause: 0.0000
+Total deposition fraction in alveolar region during exhalation: 0.0035
+
+*************Dosimetrics**************
+Mass Deposition per Alveolus (mg): 1.243E-8
+Mass Deposition per Macrophage (mg): 1.028E-9
+Number of Particles per Alveolus: 2.343E-2
+Number of Particles per Macrophage: 1.936E-3
+Airway deposition fraction (TB + Alv): 0.0254
+  
+Deposition per generation in RM
+Gen. Num.	Dep. Frac.	Surf. Area	TB S.A. 	Pul S.A.	Dep. Frac./Area (cm²)
+   5		 4.677E-4	 3.769E+0	 3.769E+0	 0.000E+0	 1.241E-4
+   6		 6.385E-4	 7.810E+0	 7.810E+0	 0.000E+0	 8.176E-5
+   7		 4.367E-4	 7.097E+0	 7.097E+0	 0.000E+0	 6.154E-5
+   8		 7.331E-4	 1.197E+1	 1.197E+1	 0.000E+0	 6.126E-5
+   9		 7.254E-4	 1.344E+1	 1.344E+1	 0.000E+0	 5.396E-5
+   10		 9.744E-4	 1.523E+1	 1.523E+1	 0.000E+0	 6.400E-5
+   11		 9.184E-4	 1.682E+1	 1.682E+1	 0.000E+0	 5.461E-5
+   12		 8.297E-4	 1.637E+1	 1.637E+1	 0.000E+0	 5.067E-5
+   13		 1.174E-3	 2.169E+1	 2.169E+1	 0.000E+0	 5.411E-5
+   14		 1.190E-3	 2.557E+1	 2.557E+1	 0.000E+0	 4.653E-5
+   15		 1.119E-3	 2.796E+1	 2.796E+1	 0.000E+0	 4.001E-5
+   16		 1.535E-3	 4.683E+1	 0.000E+0	 1.020E+2	 3.277E-5
+   17		 1.978E-3	 7.779E+1	 0.000E+0	 2.590E+2	 2.542E-5
+   18		 2.448E-3	 1.308E+2	 0.000E+0	 7.141E+2	 1.871E-5
+   19		 3.056E-3	 2.355E+2	 0.000E+0	 2.340E+3	 1.298E-5
+   20		 3.518E-3	 4.219E+2	 0.000E+0	 4.107E+3	 8.337E-6
+   21		 3.074E-3	 7.799E+2	 0.000E+0	 7.583E+3	 3.941E-6
+   22		 5.993E-4	 1.432E+3	 0.000E+0	 1.395E+4	 4.185E-7
+   23		 0.000E+0	 2.711E+3	 0.000E+0	 2.635E+4	 0.000E+0
+  
+Lobe: RL
+Number of segments: 21
+Number of terminal airways (alveolar regions): 8192
+Lobe volume: 1092.66 ml
+Volume of conducting airways: 37.40 ml
+Total deposition fraction in conducting airways: 0.0492
+Total deposition fraction in conducting airways during inhalation: 0.0090
+Total deposition fraction in conducting airways during pause: 0.0000
+Total deposition fraction in conducting airways during exhalation: 0.0042
+Total deposition fraction in alveolar region: 0.0537
+Total deposition fraction in alveolar region during inhalation: 0.0128
+Total deposition fraction in alveolar region during pause: 0.0000
+Total deposition fraction in alveolar region during exhalation: 0.0116
+
+*************Dosimetrics**************
+Mass Deposition per Alveolus (mg): 1.030E-8
+Mass Deposition per Macrophage (mg): 8.515E-10
+Number of Particles per Alveolus: 1.942E-2
+Number of Particles per Macrophage: 1.605E-3
+Airway deposition fraction (TB + Alv): 0.1029
+  
+Deposition per generation in RL
+Gen. Num.	Dep. Frac.	Surf. Area	TB S.A. 	Pul S.A.	Dep. Frac./Area (cm²)
+   5		 3.346E-3	 3.956E+0	 3.956E+0	 0.000E+0	 8.458E-4
+   6		 3.783E-3	 7.845E+0	 7.845E+0	 0.000E+0	 4.822E-4
+   7		 2.915E-3	 1.291E+1	 1.291E+1	 0.000E+0	 2.258E-4
+   8		 1.764E-3	 1.361E+1	 1.361E+1	 0.000E+0	 1.296E-4
+   9		 1.719E-3	 2.139E+1	 2.139E+1	 0.000E+0	 8.034E-5
+   10		 3.047E-3	 4.433E+1	 4.433E+1	 0.000E+0	 6.873E-5
+   11		 4.345E-3	 8.284E+1	 8.284E+1	 0.000E+0	 5.244E-5
+   12		 4.335E-3	 8.546E+1	 8.546E+1	 0.000E+0	 5.072E-5
+   13		 3.829E-3	 9.439E+1	 9.439E+1	 0.000E+0	 4.056E-5
+   14		 4.329E-3	 1.049E+2	 1.049E+2	 0.000E+0	 4.127E-5
+   15		 5.055E-3	 1.206E+2	 1.206E+2	 0.000E+0	 4.192E-5
+   16		 5.005E-3	 1.588E+2	 1.588E+2	 0.000E+0	 3.151E-5
+   17		 5.720E-3	 1.938E+2	 1.938E+2	 0.000E+0	 2.952E-5
+   18		 6.658E-3	 2.824E+2	 0.000E+0	 6.503E+2	 2.358E-5
+   19		 8.002E-3	 4.416E+2	 0.000E+0	 1.554E+3	 1.812E-5
+   20		 9.541E-3	 7.127E+2	 0.000E+0	 4.103E+3	 1.339E-5
+   21		 1.104E-2	 1.170E+3	 0.000E+0	 1.168E+4	 9.435E-6
+   22		 1.125E-2	 1.970E+3	 0.000E+0	 1.889E+4	 5.711E-6
+   23		 7.038E-3	 3.425E+3	 0.000E+0	 3.221E+4	 2.055E-6
+   24		 1.927E-4	 6.071E+3	 0.000E+0	 5.596E+4	 3.175E-8
+   25		 0.000E+0	 1.084E+4	 0.000E+0	 9.806E+4	 0.000E+0
+  
+--> Deposition Fraction per acinar region <--
+0.026047796628395
+0.050243684965700
+0.016206532472357
+0.053721217982756
+0.029473395531593
+  
+Total alveolar/acinar deposition: 0.1757
+Average deposition per alveolus/acinus: 3.514E-2
+Standard deviation of acinar deposition: 1.618E-2
+Realtive SD of acinar deposition: 4.603E-1
