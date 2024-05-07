@@ -1,17 +1,17 @@
 ---
-title: "Figure 3 - Breathing Summary"
+title: "Figure 4 - Breathing Summary"
 author: "irw"
 date: "Created 20240131 -- Last compiled `r format(Sys.Date())`"
 always_allow_html: false
 output:
-  html_document:
-    df_print: paged
-    toc: yes
-    toc_float: yes
   pdf_document:
     toc: yes
     toc_depth: 3
     keep_tex: true
+  html_document:
+    df_print: paged
+    toc: yes
+    toc_float: yes
 params:
   verbose: FALSE
 changes:
@@ -371,6 +371,39 @@ full_lung_breaths <- bind_rows(
 ```{r, results = 'asis'}
 full_lung_breaths %>% 
   print_breath_summary(formatted_only = !params$verbose, trim = F)
+```
+
+## Statistics
+
+```{r}
+# Breaths per minute
+full_lung_breaths %>% 
+  group_by(name, peak) %>% 
+  summarize(breaths_per_minute = 1/(sum(time_s)/60)) %>% 
+  summarize(bpm = mean(breaths_per_minute), 
+            sd = sd(breaths_per_minute)) %>% 
+  mutate(maneuver = case_match(
+    name,
+    "d500-s250-home" ~ "Fast-tidal",
+    "d500-s450-full-exhale" ~ "Fast-moderate",
+    "d2100-s250-home" ~ "Resting-tidal",
+    "d2100-s450-full-exhale" ~ "Resting-moderate"
+  )
+  )
+
+# Peak flow rate
+
+# Resting
+t.test(
+  full_lung_breaths %>% subset(maneuver == "i" & name == "d2100-s250-home") %>% .$avg_q,
+  full_lung_breaths %>% subset(maneuver == "i" & name == "d2100-s450-full-exhale") %>% .$avg_q
+  )
+
+# Fast
+t.test(
+  full_lung_breaths %>% subset(maneuver == "i" & name == "d500-s250-home") %>% .$avg_q,
+  full_lung_breaths %>% subset(maneuver == "i" & name == "d500-s450-full-exhale") %>% .$avg_q
+  )
 ```
 
 
