@@ -4,14 +4,14 @@ author: "irw"
 date: "Created 20240131 -- Last compiled `r format(Sys.Date())`"
 always_allow_html: false
 output:
-  pdf_document:
-    toc: yes
-    toc_depth: 3
-    keep_tex: true
   html_document:
     df_print: paged
     toc: yes
     toc_float: yes
+  pdf_document:
+    toc: yes
+    toc_depth: 3
+    keep_tex: true
 params:
   verbose: FALSE
 changes:
@@ -411,7 +411,7 @@ t.test(
 
 ## Original time series
 
-```{r}
+```{r, eval = F}
 format_full_lung <- function(plot) {
   plot +
     coord_cartesian(
@@ -447,8 +447,57 @@ full_moderate_deep <-
   format_full_lung()
 ```
 
-```{r, fig.width = 174/3/25.4, fig.height = 40/25.4,}
+```{r, fig.width = 174/3/25.4, fig.height = 40/25.4}
 knitr::opts_chunk$set(fig.width = 174/3/25.4, fig.height = 40/25.4)
+
+format_full_lung_seconds <- function(plot) {
+  plot +
+    coord_cartesian(
+      xlim = c(0, 0.7), 
+      ylim = c(-50, 50),
+      expand = F) +
+    # Manually set breaks and labels to rescale to seconds
+    scale_x_continuous(breaks = c(0, 10, 20, 30, 40)/60, labels = c(0, 10, 20, 30, 40)) +
+    labs(x = "Time (seconds)") +
+    theme_bw(base_size = 8) +
+    theme(legend.position = "none")
+}
+
+# Reference plot
+# `breaths_d500-s250-home` %>% 
+#   trim_end_breaths() %>% 
+#   plot_flow_time() %>% 
+#   format_full_lung()
+
+full_fast_shallow <- 
+`breaths_d500-s250-home` %>% 
+  trim_end_breaths() %>% 
+  plot_flow_time() %>% 
+  format_full_lung_seconds()
+
+full_fast_deep <- 
+`breaths_d500-s450-full-exhale` %>% 
+  trim_end_breaths() %>% 
+  plot_flow_time() %>% 
+  format_full_lung_seconds()
+
+full_moderate_shallow <- 
+`breaths_d2100-s250-home` %>% 
+  trim_end_breaths() %>% 
+  plot_flow_time() %>% 
+  format_full_lung_seconds()
+
+full_moderate_deep <- 
+`breaths_d2100-s450-full-exhale` %>%
+  trim_end_breaths() %>% 
+  plot_flow_time() %>% 
+  format_full_lung_seconds()
+```
+
+```{r, fig.width = 174/3/25.4, fig.height = 40/25.4}
+knitr::opts_chunk$set(fig.width = 174/3/25.4, fig.height = 40/25.4)
+
+# Set which of the above chunks to evaluate, depending on desired axis units
 
 full_fast_shallow
 
@@ -461,22 +510,7 @@ full_moderate_deep
 ```
 
 ```{r, fig.width=174/3*2/25.4, fig.height=80/25.4}
-knitr::opts_chunk$set(fig.width = 174/3*2/25.4, fig.height = 40*2/25.4, dpi = 500)
-
-# Legacy
-# panel <- gridExtra::grid.arrange(
-#   full_fast_shallow, full_fast_deep,
-#        full_moderate_shallow, full_moderate_deep,
-#   layout_matrix = rbind(
-#     c(1, 2),
-#     c(3, 4)
-#     )
-# )
-
-# linewidth = 0.3
-# print(ffs)
-# ffs
-# ffs$plot$layers[[1]]$aes_params$linewidth = 4
+knitr::opts_chunk$set(fig.width = 174/3*2/25.4, fig.height = 40*2/25.4)
 
 # Cowplot maintains compatibility with modified print.ggplot
 library(cowplot)

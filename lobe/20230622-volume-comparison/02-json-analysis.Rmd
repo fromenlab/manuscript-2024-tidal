@@ -632,7 +632,7 @@ full_mass_vol <- left_join(
 
 ### Export plot (mass parity)
 ```{r}
-knitr::opts_chunk$set(fig.width = 35/25.4, fig.height = 35/25.4)
+knitr::opts_chunk$set(fig.width = 40/25.4, fig.height = 40/25.4)
 
 full_mass_vol %>% 
   ggplot(aes(x = part_vol_ml, y = vol)) +

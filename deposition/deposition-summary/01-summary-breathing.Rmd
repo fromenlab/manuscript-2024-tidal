@@ -4,13 +4,13 @@ author: "irw"
 date: "Created 2023mmDD -- Last compiled `r format(Sys.Date())`"
 always_allow_html: false
 output:
-  pdf_document:
-    toc: yes
-    keep_tex: false
   html_document:
     df_print: paged
     toc: yes
     toc_float: yes
+  pdf_document:
+    toc: yes
+    keep_tex: false
 params:
   verbose: true
 changes:
@@ -95,9 +95,14 @@ shallow_breath0 <- bind_rows(
   readRDS(here::here("deposition/20231204-full-lung/data/breaths0_231204-a9b-f7.Rds"))
 )
 
+ticks = seq(from = 0, to = 10, by = 1)
+
 shallow_breath0 %>% 
   plot_flow_time(use_alpha=T, alpha=0.2) +
-  coord_cartesian(xlim = c(0, 0.125), ylim = c(-30, 50)) +
+  coord_cartesian(xlim = c(0, 0.13), ylim = c(-30, 50), expand = FALSE) +
+  # Manually set breaks and labels to rescale to seconds
+  scale_x_continuous(breaks = ticks/60, labels = ticks) +
+  labs(x = "Time (seconds)") +
   guides(color = "none") +
   theme_bw(base_size = 8)
 ```
@@ -113,10 +118,15 @@ deep_breath0 <- bind_rows(
   readRDS(here::here("deposition/20231222-full-lung/data/breaths0_231222-107-71.Rds"))
 )
 
+ticks = seq(from = 0, to = 10, by = 1)
+
 deep_breath0 %>% 
   plot_flow_time(use_alpha=T, alpha=0.2) +
-  coord_cartesian(xlim = c(0, 0.125), ylim = c(-30, 50)) +
-    guides(color = "none") +
+  coord_cartesian(xlim = c(0, 0.13), ylim = c(-30, 50), expand = FALSE) +
+  # Manually set breaks and labels to rescale to seconds
+  scale_x_continuous(breaks = ticks/60, labels = ticks) +
+  labs(x = "Time (seconds)") +
+  guides(color = "none") +
   theme_bw(base_size = 8)
 ```
 
@@ -132,10 +142,15 @@ uniform_breath0 <- bind_rows(
   readRDS(here::here("deposition/20240221-full-lung/data/breaths0_240221-b4f-80.Rds"))
 )
 
+ticks = seq(from = 0, to = 10, by = 1)
+
 uniform_breath0 %>% 
   plot_flow_time(use_alpha=T, alpha=0.2) +
-  coord_cartesian(xlim = c(0, 0.125), ylim = c(-30, 50)) +
-    guides(color = "none") +
+  coord_cartesian(xlim = c(0, 0.13), ylim = c(-30, 50), expand = FALSE) +
+  # Manually set breaks and labels to rescale to seconds
+  scale_x_continuous(breaks = ticks/60, labels = ticks) +
+  labs(x = "Time (seconds)") +
+  guides(color = "none") +
   theme_bw(base_size = 8)
 ```
 
